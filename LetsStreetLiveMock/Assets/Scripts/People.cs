@@ -51,20 +51,24 @@ public class People : MonoBehaviour
 	{
 		if (other.tag != "DanceRange") return;
 
-		PlayerDance playerDance = other.gameObject.GetComponent<PlayerDance>();
+		Dance playerDance = other.gameObject.GetComponent<Dance>();
 
-		// ファンポイントが加算される
+		// メソッドをスタック
 		playerDance.OnEndDance += () =>
 		{
+			// 好感度を設定
 			SetFanPoint(playerDance.PlayerType, playerDance.GiveFanPoint);
+			// 好感度ビルボードのマテリアルを更新
 			_fanPoint.UpdateMaterial();
 		};	
 	}
 
-	private void SetFanPoint(Define.PlayerType type, int addValue)
+	// ポイントの計算...dancePoint(ダンスのスコア...効果範囲内の人全員に与える)
+	// 人の種類に応じて好感度上昇量は異なる
+	private void SetFanPoint(Define.PlayerType type, int dancePoint)
 	{
 		// ポイントを加算
-		_fanPointArray[(int)type] += addValue;
+		_fanPointArray[(int)type] += dancePoint;
 
 		// ファンポイント最大値を取得
 		float fanPointMax = Define.FanPointArray[(int)_fanLevel];
@@ -78,4 +82,6 @@ public class People : MonoBehaviour
 	{
 		
 	}
+
+	
 }

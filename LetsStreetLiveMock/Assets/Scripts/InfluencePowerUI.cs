@@ -13,13 +13,13 @@ public class InfluencePowerUI : MonoBehaviour
 	private Image _image;
 
 	[SerializeField]
-	private InfluencePower _influencePower;
+	private DisplayMediator _displayFacade;
 
 	[SerializeField]
 	private Define.PlayerType _playerType;
 
 	void Update ()
 	{
-		_image.fillAmount = _influencePower.GetValue(_playerType);
+		_image.fillAmount = _displayFacade.InfluencePower.GetValue(_playerType);
 	}
 }

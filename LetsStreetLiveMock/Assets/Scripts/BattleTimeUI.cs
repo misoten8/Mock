@@ -11,10 +11,13 @@ public class BattleTimeUI : MonoBehaviour
 	private Text _text;
 
 	[SerializeField]
-	private BattleTime _battleTime;
+	private DisplayMediator _displayFacade;
+
+	private BattleTime _battleTime = null;
 
 	void Start ()
 	{
+		_battleTime = _displayFacade.BattleTime;
 		_text.text = "Time Limit:" + _battleTime.CurrentTime.ToString("F0");
 	}
 	

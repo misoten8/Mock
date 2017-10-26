@@ -11,13 +11,16 @@ public class ScoreUI : MonoBehaviour
 	private Define.PlayerType _playerType;
 
 	[SerializeField]
+	private DisplayMediator _displayFacade;
+
+	[SerializeField]
 	private Text _text;
 
 	private Score _score = null;
 
 	void Start ()
 	{
-		_score = GameObject.Find("BattleManager").GetComponent<Score>();
+		_score = _displayFacade.Score;
 		_text.text = _score.GetScore(_playerType).ToString();
 	}
 	

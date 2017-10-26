@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
 	private Animator _animator;
 
 	[SerializeField]
-	private PlayerDance _dance;
+	private Dance _dance;
 
 	void Update ()
 	{
