@@ -10,49 +10,67 @@ public class DanceUI : MonoBehaviour
 	private MeshRenderer _mesh;
 
 	[SerializeField]
-	private DisplayMediator _displayMediator;
+	private DisplayMediator _dm;
 
 	private void Start()
 	{
 		_mesh.enabled = true;
-		_displayMediator.DanceSuccess.enabled = false;
-		_displayMediator.DanceFailure.enabled = false;
-		_displayMediator.DancePoint.enabled = false;
+		_dm.DanceSuccess.enabled = false;
+		_dm.DanceFailure.enabled = false;
+		_dm.DancePoint.enabled = false;
+		_dm.DanceShake.enabled = false;
+		_dm.DanceStop.enabled = false;
 	}
 
 	public void Active()
 	{
 		_mesh.enabled = false;
-		_displayMediator.DancePoint.enabled = true;
+		_dm.DancePoint.enabled = true;
 	}
 
 	public void NotActive()
 	{
 		_mesh.enabled = true;
-		_displayMediator.DancePoint.enabled = false;
-		_displayMediator.DanceSuccess.enabled = false;
-		_displayMediator.DanceFailure.enabled = false;
+		_dm.DancePoint.enabled = false;
+		_dm.DanceSuccess.enabled = false;
+		_dm.DanceFailure.enabled = false;
+		_dm.DanceShake.enabled = false;
+		_dm.DanceStop.enabled = false;
 	}
 
 	public void SetResult(bool success)
 	{
 		if(success)
 		{
-			_displayMediator.DanceSuccess.enabled = true;
+			_dm.DanceSuccess.enabled = true;
 		}
 		else
 		{
-			_displayMediator.DanceFailure.enabled = true;
+			_dm.DanceFailure.enabled = true;
 		}
 	}
 
-	public void DancePointUpdate(int value)
+	public void SetPointUpdate(int value)
 	{
-		_displayMediator.DancePoint.text = "DancePoint :" + value.ToString();
+		_dm.DancePoint.text = "DancePoint :" + value.ToString();
 	}
 
-	public void DancePointColor(Color color)
+	public void SetPointColor(Color color)
 	{
-		_displayMediator.DancePoint.color = color;
+		_dm.DancePoint.color = color;
+	}
+
+	public void SetRequestShake(bool isRequestShake)
+	{
+		if(isRequestShake)
+		{
+			_dm.DanceShake.enabled = true;
+			_dm.DanceStop.enabled = false;
+		}
+		else
+		{
+			_dm.DanceShake.enabled = false;
+			_dm.DanceStop.enabled = true;
+		}
 	}
 }

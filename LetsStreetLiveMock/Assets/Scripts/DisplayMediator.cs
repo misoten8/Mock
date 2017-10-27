@@ -34,6 +34,23 @@ public class DisplayMediator : MonoBehaviour
 	[SerializeField]
 	private Text _danceFailure;
 
+	public Text DanceShake
+	{
+		get { return _danceShake; }
+	}
+
+	[SerializeField]
+	private Text _danceShake;
+
+	public Text DanceStop
+	{
+		get { return _danceStop; }
+	}
+
+	[SerializeField]
+	private Text _danceStop;
+
+
 	// 以下は子要素が使用するフィールド群
 
 

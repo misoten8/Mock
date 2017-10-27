@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UniRx;
 
 /// <summary>
 /// ダンス クラス
@@ -62,6 +63,11 @@ public class Dance : MonoBehaviour
 
 	private bool _isRequestShake = false;
 
+	/// <summary>
+	/// 処理中かどうか
+	/// </summary>
+	private bool _isTransing = false;
+
 	private void Start()
 	{
 		_danceCollider.enabled = false;
@@ -77,7 +83,7 @@ public class Dance : MonoBehaviour
 			{
 				ChangeFanPoint(1);
 			}
-			_danceUI.DancePointUpdate(_giveFanPoint);
+			_danceUI.SetPointUpdate(_giveFanPoint);
 		}
 	}
 
@@ -86,6 +92,8 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public void Begin()
 	{
+		_isTransing = false;
+		_isSuccess = false;
 		_giveFanPoint = 0;
 		_danceCollider.enabled = true;
 		SetCamera(true);
@@ -97,12 +105,21 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public void End()
 	{
+		if (_isTransing) return;
+
 		OnEndDance?.Invoke();
 		_danceUI.SetResult(IsSuccess);
-		_danceUI.NotActive();
-		SetCamera(false);
-		_danceCollider.enabled = false;
-		_giveFanPoint = 0;
+		_isTransing = true;
+		Observable
+			.Timer(TimeSpan.FromSeconds(3))
+			.Subscribe(_ =>
+			{
+				_isTransing = false;
+				_danceUI.NotActive();
+				SetCamera(false);
+				_danceCollider.enabled = false;
+				_giveFanPoint = 0;
+			});
 	}
 
 	/// <summary>
@@ -131,21 +148,11 @@ public class Dance : MonoBehaviour
 	private void ChangeFanPoint(int addValue)
 	{
 		_giveFanPoint += addValue;
-		if(_giveFanPoint < 0)
-		{
-			_isSuccess = false;
-			_danceUI.DancePointColor(new Color(1.0f, 0.0f, 0.0f));
-			return;
-		}
-		else if(_giveFanPoint > 15)
+		_danceUI.SetPointColor(addValue > 0 ? new Color(0.0f, 1.0f, 0.0f) : new Color(1.0f, 0.0f, 0.0f));
+		if(_giveFanPoint >= 30)
 		{
 			_isSuccess = true;
-			_danceUI.DancePointColor(new Color(0.0f, 1.0f, 0.0f));
-		}
-		else
-		{
-			_isSuccess = false;
-			_danceUI.DancePointColor(new Color(1.0f, 1.0f, 0.0f));
+			_danceUI.SetPointColor(new Color(0.0f, 0.0f, 1.0f));
 		}
 	}
 }
