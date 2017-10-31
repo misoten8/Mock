@@ -18,7 +18,7 @@ public class InfluencePowerUI : MonoBehaviour
 	[SerializeField]
 	private Define.PlayerType _playerType;
 
-	void Update ()
+	void Update()
 	{
 		_image.fillAmount = _displayFacade.InfluencePower.GetValue(_playerType);
 	}

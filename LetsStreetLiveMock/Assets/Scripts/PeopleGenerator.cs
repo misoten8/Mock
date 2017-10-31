@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using Misoten8Utility;
+using System.Collections.Generic;
 
 /// <summary>
 /// PeopleGenerator クラス
@@ -32,6 +33,11 @@ public class PeopleGenerator : MonoBehaviour
 	[SerializeField]
 	private Vector2 _rangeSize;
 
+	/// <summary>
+	/// 人のリスト
+	/// </summary>
+	private List<People> _list = new List<People>();
+
 	public void CreateStart()
 	{
 		StartCoroutine(Enumerator());
@@ -42,9 +48,16 @@ public class PeopleGenerator : MonoBehaviour
 		CreateStart();
 	}
 
+	private void Update()
+	{
+		
+	}
+
 	private void Create()
 	{
-		Instantiate(_peplePrefab[Random.Range(0, 3)]).transform.position = transform.position + new Vector3(Random.Range(-_rangeSize.x, _rangeSize.x), 0, Random.Range(-_rangeSize.y, _rangeSize.y));
+		GameObject people = Instantiate(_peplePrefab[Random.Range(0, 3)]);
+		people.transform.position = transform.position + new Vector3(Random.Range(-_rangeSize.x, _rangeSize.x), 0, Random.Range(-_rangeSize.y, _rangeSize.y));
+		_list.Add(people.GetComponent<People>());
 	}
 
 	private IEnumerator Enumerator()

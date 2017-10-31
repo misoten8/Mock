@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using System.Threading;
+using System.Threading.Tasks;
 
 /// <summary>
 /// misoten8Utility 名前空間
@@ -18,7 +21,7 @@ namespace Misoten8Utility
 		/// <summary>
 		/// 選択した範囲の要素を取り出す
 		/// </summary>
-		public static IEnumerable<TSource> ElementsRange<TSource>(this IEnumerable<TSource> source, int beginIndex, int endIndex)
+		public static IEnumerable<T> ElementsRange<T>(this IEnumerable<T> source, int beginIndex, int endIndex)
 		{
 			return source.Skip(beginIndex).Take(endIndex - beginIndex);
 		}

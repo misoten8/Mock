@@ -55,12 +55,11 @@
 
 			fixed4 FS(FS_INPUT i) : COLOR
 			{
-
 				fixed4 col = _Color * tex2D(_MainTex, i.uv);;
 	
 				UNITY_APPLY_FOG(i.fogCoord, col);
 				UNITY_OPAQUE_ALPHA(col.a);
-
+				// 閾値を超えたら、色を暗くする
 				if (i.uv.x > _Border)
 				{
 					col *= 0.25;

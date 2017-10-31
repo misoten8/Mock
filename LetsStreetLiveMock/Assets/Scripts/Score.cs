@@ -25,7 +25,7 @@ public class Score : MonoBehaviour
 	/// </summary>
 	public void SetScore(Define.PlayerType playerType, int addValue)
 	{
-		if((int)playerType < 0 || (int)playerType >= Define.METER_NUM_MAX)
+		if ((int)playerType < 0 || (int)playerType >= Define.METER_NUM_MAX)
 		{
 			Debug.LogError("プレイヤー番号が不正です");
 			return;

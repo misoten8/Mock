@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using UniRx;
 
@@ -68,6 +67,8 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	private bool _isTransing = false;
 
+	private SingleAssignmentDisposable _disposable = null;
+
 	private void Start()
 	{
 		_danceCollider.enabled = false;
@@ -79,9 +80,11 @@ public class Dance : MonoBehaviour
 	{
 		if (IsPlaying)
 		{
+			if (_isTransing) return;
+
 			if (Input.GetKeyDown("return"))
 			{
-				ChangeFanPoint(1);
+				ChangeFanPoint(_isRequestShake ? 1 : -1);
 			}
 			_danceUI.SetPointUpdate(_giveFanPoint);
 		}
@@ -98,6 +101,26 @@ public class Dance : MonoBehaviour
 		_danceCollider.enabled = true;
 		SetCamera(true);
 		_danceUI.Active();
+		_isRequestShake = true;
+		_danceUI.SetRequestShake(_isRequestShake);
+		_disposable = new SingleAssignmentDisposable();
+		_disposable.Disposable = Observable
+			.Timer(TimeSpan.FromSeconds(10))
+			.Subscribe(_ =>
+			{
+				_isRequestShake = false;
+				_danceUI.SetRequestShake(_isRequestShake);
+				Observable
+					.Timer(TimeSpan.FromSeconds(10))
+					.Subscribe(x => 
+					{
+						_isRequestShake = true;
+						_danceUI.SetRequestShake(_isRequestShake);
+						Observable
+							.Timer(TimeSpan.FromSeconds(10))
+							.Subscribe(e => End());
+					});
+			});
 	}
 
 	/// <summary>
@@ -118,8 +141,26 @@ public class Dance : MonoBehaviour
 				_danceUI.NotActive();
 				SetCamera(false);
 				_danceCollider.enabled = false;
+				// スコアを設定する
 				_giveFanPoint = 0;
 			});
+	}
+
+	/// <summary>
+	/// ダンスを中断する
+	/// </summary>
+	public void Cancel()
+	{
+		if (IsPlaying)
+		{
+			_isTransing = false;
+			_danceUI.NotActive();
+			SetCamera(false);
+			_danceCollider.enabled = false;
+			// スコアを設定する
+			_giveFanPoint = 0;
+			_disposable.Dispose();
+		}
 	}
 
 	/// <summary>
@@ -135,15 +176,6 @@ public class Dance : MonoBehaviour
 		camera.localPosition = new Vector3(localPos.x, localPos.y, isPlay ? 2.0f : -2.0f);
 		camera.localEulerAngles = new Vector3(localAngle.x, isPlay ? 180.0f : 0.0f, localAngle.z);
 	}
-
-	/////// <summary>
-	/////// ファンポイントを減少し続ける
-	/////// </summary>
-	////private IEnumerator FanPointDecreaser()
-	////{
-	////	yield return new WaitForSeconds(2.0f);
-	////	_danceUI.NotActive();
-	////}
 
 	private void ChangeFanPoint(int addValue)
 	{

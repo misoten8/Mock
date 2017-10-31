@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
 	[SerializeField]
 	private Dance _dance;
 
-	void Update ()
+	void Update()
 	{
 		if (!_dance.IsPlaying)
 		{
@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
 			if (Input.GetKeyDown("k"))
 			{
 				//_animator.SetBool("PlayDance", false);
-				_dance.End();
+				_dance.Cancel();
 			}
 		}
 		//_animator.SetFloat("Velocity", (Mathf.Abs(_rb.velocity.x) + Mathf.Abs(_rb.velocity.z)) / 2.0f);
