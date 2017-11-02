@@ -1,6 +1,9 @@
 ﻿using System;
 using UnityEngine;
 using UniRx;
+using WiimoteApi;
+using WiimoteApi.Internal;
+using WiimoteApi.Util;
 
 /// <summary>
 /// ダンス クラス
@@ -69,6 +72,9 @@ public class Dance : MonoBehaviour
 
 	private SingleAssignmentDisposable _disposable = null;
 
+	// wiiリモコン
+	Wiimote _wm;
+
 	private void Start()
 	{
 		_danceCollider.enabled = false;
@@ -81,8 +87,9 @@ public class Dance : MonoBehaviour
 		if (IsPlaying)
 		{
 			if (_isTransing) return;
-
-			if (Input.GetKeyDown("return"))
+			_wm = WiimoteManager.Wiimotes[0];
+			_wm.ReadWiimoteData();
+			if (Input.GetKeyDown("return") || _wm.MotionPlus.GetSwing())
 			{
 				ChangeFanPoint(_isRequestShake ? 1 : -1);
 			}
@@ -130,7 +137,7 @@ public class Dance : MonoBehaviour
 	{
 		if (_isTransing) return;
 
-		OnEndDance?.Invoke();
+		OnEndDance.Invoke();
 		_danceUI.SetResult(IsSuccess);
 		_isTransing = true;
 		Observable
