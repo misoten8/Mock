@@ -56,7 +56,7 @@ public class Player : MonoBehaviour
 			if (Input.GetKey("down") || _wm.Button.d_left) _rb.AddForce(Vector3.back * _power);
 
 			//if (Input.GetKeyDown("j")) _rb.AddForce(Vector3.up * _power / 20, ForceMode.Impulse);
-			if (Input.GetKeyDown("k"))
+			if (Input.GetKeyDown("k") || _wm.Button.two)
 			{
 				_dance.Begin();
 				//_animator.SetBool("PlayDance", true);
