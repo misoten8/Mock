@@ -57,8 +57,8 @@ public class People : MonoBehaviour
 		_score = GameObject.Find("BattleManager").GetComponent<Score>();
 		// 無所属に全てのファンポイントを設定
 		_fanPointArray[0] = Define.FanPointArray[(int)_fanLevel];
-		_importMaterial = new Material(_importMaterial);
-		_meshRenderer.materials[1] = _importMaterial; 
+		//_importMaterial = new Material(_importMaterial);
+		//_meshRenderer.materials[1] = _importMaterial; 
 	}
 
 	private void OnTriggerEnter(Collider other)
