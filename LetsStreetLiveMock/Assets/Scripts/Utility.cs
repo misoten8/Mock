@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
 
 /// <summary>
 /// misoten8Utility 名前空間
@@ -21,9 +22,29 @@ namespace Misoten8Utility
 		/// <summary>
 		/// 選択した範囲の要素を取り出す
 		/// </summary>
-		public static IEnumerable<T> ElementsRange<T>(this IEnumerable<T> source, int beginIndex, int endIndex)
+		public static IEnumerable<T> ElementsRange<T>(this IEnumerable<T> element, int beginIndex, int endIndex)
 		{
-			return source.Skip(beginIndex).Take(endIndex - beginIndex);
+			return element.Skip(beginIndex).Take(endIndex - beginIndex);
+		}
+
+		/// <summary>
+		/// 最大値の要素が格納されている番号を取得する
+		/// </summary>
+		public static int FindIndexMax<T>(this IEnumerable<T> element)
+		{
+			return element
+				.Select((v, i) => new { Value = v, Index = i })
+				.First(e => e.Value.Equals(element.Select(s => s).Max())).Index;
+		}
+
+		/// <summary>
+		/// 最大値の要素が格納されている番号を取得する
+		/// </summary>
+		public static int FindIndexMin<T>(this IEnumerable<T> element)
+		{
+			return element
+				.Select((v, i) => new { Value = v, Index = i })
+				.First(e => e.Value.Equals(element.Select(s => s).Min())).Index;
 		}
 	}
 }

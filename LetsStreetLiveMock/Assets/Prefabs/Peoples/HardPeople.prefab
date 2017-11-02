@@ -254,6 +254,8 @@ MonoBehaviour:
   _fanLevel: 2
   _score: {fileID: 0}
   _fanPoint: {fileID: 114634621339960502}
+  _meshRenderer: {fileID: 23220301910723970}
+  _importMaterial: {fileID: 2100000, guid: ea9d593b471e9154a8c47a90d138e709, type: 2}
 --- !u!114 &114634621339960502
 MonoBehaviour:
   m_ObjectHideFlags: 1

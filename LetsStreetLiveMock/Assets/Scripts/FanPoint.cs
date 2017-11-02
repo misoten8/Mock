@@ -8,6 +8,11 @@ using System.Linq;
 /// </summary>
 public class FanPoint : MonoBehaviour
 {
+	public Color[] MeterColor
+	{
+		get { return _meterColor; }
+	}
+
 	[SerializeField]
 	private People _people;
 

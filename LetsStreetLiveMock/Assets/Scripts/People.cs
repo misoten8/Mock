@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using UnityEngine;
+using Misoten8Utility;
 
 /// <summary>
 /// People クラス
@@ -21,12 +22,6 @@ public class People : MonoBehaviour
 	/// </summary>
 	[SerializeField]
 	private MeshRenderer _meshRenderer;
-
-	/// <summary>
-	/// インポートするマテリアル(複製するので、このマテリアルは直接使用しない)
-	/// </summary>
-	[SerializeField]
-	private Material _importMaterial;
 
 	/// <summary>
 	/// ファンポイント
@@ -57,8 +52,8 @@ public class People : MonoBehaviour
 		_score = GameObject.Find("BattleManager").GetComponent<Score>();
 		// 無所属に全てのファンポイントを設定
 		_fanPointArray[0] = Define.FanPointArray[(int)_fanLevel];
-		_importMaterial = new Material(_importMaterial);
-		_meshRenderer.materials[1] = _importMaterial; 
+		// アウトラインの更新
+		_meshRenderer.materials[1].color = SetColor((Define.PlayerType)_fanPointArray.FindIndexMax());
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -75,7 +70,7 @@ public class People : MonoBehaviour
 			// 好感度ビルボードのマテリアルを更新
 			_fanPoint.UpdateMaterial();
 			// アウトラインの更新
-			_importMaterial.color = SetColor(Define.PlayerType.First);
+			_meshRenderer.materials[1].color = SetColor((Define.PlayerType)_fanPointArray.FindIndexMax());
 		};	
 	}
 
@@ -96,22 +91,6 @@ public class People : MonoBehaviour
 
 	private Color SetColor(Define.PlayerType type)
 	{
-		switch (type)
-		{
-			case Define.PlayerType.None:
-				return new Color(0.2f, 0.2f, 0.2f);
-			case Define.PlayerType.First:
-				return new Color(1.0f, 0.0f, 0.0f);
-			case Define.PlayerType.Second:
-				return new Color(0.0f, 0.0f, 1.0f);
-			case Define.PlayerType.Third:
-				return new Color(0.0f, 1.0f, 0.0f);
-			case Define.PlayerType.Force:
-				return new Color(1.0f, 1.0f, 0.0f);
-			default:
-				return new Color(1.0f, 1.0f, 1.0f);
-		}
+		return _fanPoint.MeterColor[(int)type];
 	}
-
-	
 }
