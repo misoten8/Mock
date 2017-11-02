@@ -48,15 +48,15 @@ public class Player : MonoBehaviour
 	{
 		if (!_dance.IsPlaying)
 		{
-			_wm = WiimoteManager.Wiimotes[0];
-			_wm.ReadWiimoteData();
-			if (Input.GetKey("up") || _wm.Button.d_right) _rb.AddForce(Vector3.forward * _power);
-			if (Input.GetKey("left") || _wm.Button.d_up) _rb.AddForce(Vector3.left * _power);
-			if (Input.GetKey("right") || _wm.Button.d_down) _rb.AddForce(Vector3.right * _power);
-			if (Input.GetKey("down") || _wm.Button.d_left) _rb.AddForce(Vector3.back * _power);
+			//_wm = WiimoteManager.Wiimotes[0];
+			//_wm.ReadWiimoteData();
+			if (Input.GetKey("up") /*|| _wm.Button.d_right*/) _rb.AddForce(Vector3.forward * _power);
+			if (Input.GetKey("left") /*|| _wm.Button.d_up*/) _rb.AddForce(Vector3.left * _power);
+			if (Input.GetKey("right") /*|| _wm.Button.d_down*/) _rb.AddForce(Vector3.right * _power);
+			if (Input.GetKey("down") /*|| _wm.Button.d_left*/) _rb.AddForce(Vector3.back * _power);
 
 			//if (Input.GetKeyDown("j")) _rb.AddForce(Vector3.up * _power / 20, ForceMode.Impulse);
-			if (Input.GetKeyDown("k") || _wm.Button.two)
+			if (Input.GetKeyDown("k")/* || _wm.Button.two*/)
 			{
 				_dance.Begin();
 				//_animator.SetBool("PlayDance", true);

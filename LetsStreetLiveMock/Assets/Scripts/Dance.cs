@@ -44,6 +44,8 @@ public class Dance : MonoBehaviour
 	[SerializeField]
 	private Camera _camera;
 
+	private GameObject _particle;
+
 	/// <summary>
 	/// ダンスの効果範囲の当たり判定
 	/// </summary>
@@ -87,11 +89,12 @@ public class Dance : MonoBehaviour
 		if (IsPlaying)
 		{
 			if (_isTransing) return;
-			_wm = WiimoteManager.Wiimotes[0];
-			_wm.ReadWiimoteData();
-			if (Input.GetKeyDown("return") || _wm.MotionPlus.GetSwing())
+			//_wm = WiimoteManager.Wiimotes[0];
+			//_wm.ReadWiimoteData();
+			if (Input.GetKeyDown("return") /*|| _wm.MotionPlus.GetSwing()*/)
 			{
 				ChangeFanPoint(_isRequestShake ? 1 : -1);
+				ParticleManager.Play(_isRequestShake ? "DanceNowClear" : "DanceNowFailed", new Vector3(), transform);
 			}
 			_danceUI.SetPointUpdate(_giveFanPoint);
 		}
@@ -102,6 +105,7 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public void Begin()
 	{
+		_particle = ParticleManager.Play("DanceNow", new Vector3(), transform);
 		_isTransing = false;
 		_isSuccess = false;
 		_giveFanPoint = 0;
@@ -139,6 +143,7 @@ public class Dance : MonoBehaviour
 
 		OnEndDance.Invoke();
 		_danceUI.SetResult(IsSuccess);
+		Destroy(_particle);
 		_isTransing = true;
 		Observable
 			.Timer(TimeSpan.FromSeconds(3))

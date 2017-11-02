@@ -42,10 +42,12 @@ public class DanceUI : MonoBehaviour
 	{
 		if(success)
 		{
+			ParticleManager.Play("DanceEndClear", new Vector3(), transform);
 			_dm.DanceSuccess.enabled = true;
 		}
 		else
 		{
+			ParticleManager.Play("DanceEndFailed", new Vector3(), transform);
 			_dm.DanceFailure.enabled = true;
 		}
 	}
