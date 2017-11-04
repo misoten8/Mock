@@ -31,17 +31,17 @@ public class Player : MonoBehaviour
 	[SerializeField]
 	private Dance _dance;
 
-	private Wiimote _wm;
-	private bool _wmActive = false;
+	//private Wiimote _wm;
+	//private bool _wmActive = false;
 
 	void Start()
 	{
 		// wiiリモコン初期化処理
-		WiimoteManager.FindWiimotes();
-		_wm = WiimoteManager.Wiimotes[0];
-		_wm.InitWiiMotionPlus();
-		_wm.SendPlayerLED(true, false, false, false);
-		_wmActive = false;
+		//WiimoteManager.FindWiimotes();
+		//_wm = WiimoteManager.Wiimotes[0];
+		//_wm.InitWiiMotionPlus();
+		//_wm.SendPlayerLED(true, false, false, false);
+		//_wmActive = false;
 	}
 
 	void Update()
