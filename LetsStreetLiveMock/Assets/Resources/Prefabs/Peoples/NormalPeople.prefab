@@ -24,6 +24,8 @@ GameObject:
   - component: {fileID: 135505166505465452}
   - component: {fileID: 114248920631976908}
   - component: {fileID: 54049106572582298}
+  - component: {fileID: 114050216218602054}
+  - component: {fileID: 114124700771963632}
   m_Layer: 0
   m_Name: NormalPeople
   m_TagString: Untagged
@@ -228,6 +230,34 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &114050216218602054
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1133852973740148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3da7ca191ff535a4496dfeb94418302f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mob: {fileID: 114248920631976908}
+  _followMove: {fileID: 114124700771963632}
+--- !u!114 &114124700771963632
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1133852973740148}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38c956953de4b6f4c80552e5a38bc2a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rb: {fileID: 54049106572582298}
+  _velocity: 200
+  _stopDistance: 3
+  _slowDistance: 9
 --- !u!114 &114248920631976908
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -242,8 +272,8 @@ MonoBehaviour:
   _fanLevel: 1
   _score: {fileID: 0}
   _fanPoint: {fileID: 114292962875761042}
+  _mobController: {fileID: 0}
   _meshRenderer: {fileID: 23139675985354190}
-  _importMaterial: {fileID: 2100000, guid: ea9d593b471e9154a8c47a90d138e709, type: 2}
 --- !u!114 &114292962875761042
 MonoBehaviour:
   m_ObjectHideFlags: 1

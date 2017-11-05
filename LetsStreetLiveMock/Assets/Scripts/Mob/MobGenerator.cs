@@ -4,10 +4,10 @@ using Misoten8Utility;
 using System.Collections.Generic;
 
 /// <summary>
-/// PeopleGenerator クラス
+/// モブキャラ生成 クラス
 /// 製作者：実川
 /// </summary>
-public class PeopleGenerator : MonoBehaviour
+public class MobGenerator : MonoBehaviour
 {
 	/// <summary>
 	/// 人のプレハブ
@@ -36,7 +36,7 @@ public class PeopleGenerator : MonoBehaviour
 	/// <summary>
 	/// 人のリスト
 	/// </summary>
-	private List<People> _list = new List<People>();
+	private List<Mob> _list = new List<Mob>();
 
 	public void CreateStart()
 	{
@@ -48,16 +48,11 @@ public class PeopleGenerator : MonoBehaviour
 		CreateStart();
 	}
 
-	private void Update()
-	{
-		
-	}
-
 	private void Create()
 	{
 		GameObject people = Instantiate(_peplePrefab[Random.Range(0, 3)]);
 		people.transform.position = transform.position + new Vector3(Random.Range(-_rangeSize.x, _rangeSize.x), 0, Random.Range(-_rangeSize.y, _rangeSize.y));
-		_list.Add(people.GetComponent<People>());
+		_list.Add(people.GetComponent<Mob>());
 	}
 
 	private IEnumerator Enumerator()

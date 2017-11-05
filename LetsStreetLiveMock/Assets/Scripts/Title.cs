@@ -9,14 +9,14 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class Title : MonoBehaviour
 {
-	void Start ()
+	void Start()
 	{
-		
+
 	}
-	
-	void Update ()
+
+	void Update()
 	{
-		
+
 	}
 
 	private void OnGUI()

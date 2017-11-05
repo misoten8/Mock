@@ -15,7 +15,7 @@ public class Dance : MonoBehaviour
 	{
 		get { return _player.Type; }
 	}
-	
+
 	public bool IsPlaying
 	{
 		get { return _danceCollider.enabled; }
@@ -41,10 +41,13 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public Action OnEndDance;
 
-	[SerializeField]
-	private Camera _camera;
+	public Player Player
+	{
+		get { return _player; }
+	}
 
-	private GameObject _particle;
+	[SerializeField]
+	private Player _player;
 
 	/// <summary>
 	/// ダンスの効果範囲の当たり判定
@@ -53,7 +56,7 @@ public class Dance : MonoBehaviour
 	private SphereCollider _danceCollider;
 
 	[SerializeField]
-	private Player _player;
+	private Camera _camera;
 
 	[SerializeField]
 	private DanceUI _danceUI;
@@ -66,6 +69,8 @@ public class Dance : MonoBehaviour
 	private bool _isSuccess = false;
 
 	private bool _isRequestShake = false;
+
+	private GameObject _particle;
 
 	/// <summary>
 	/// 処理中かどうか
@@ -88,7 +93,8 @@ public class Dance : MonoBehaviour
 	{
 		if (IsPlaying)
 		{
-			if (_isTransing) return;
+			if (_isTransing)
+				return;
 			//_wm = WiimoteManager.Wiimotes[0];
 			//_wm.ReadWiimoteData();
 			if (Input.GetKeyDown("return") /*|| _wm.MotionPlus.GetSwing()*/)
@@ -105,31 +111,38 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public void Begin()
 	{
-		_particle = ParticleManager.Play("DanceNow", new Vector3(), transform);
+		
 		_isTransing = false;
 		_isSuccess = false;
 		_giveFanPoint = 0;
-		_danceCollider.enabled = true;
 		SetCamera(true);
 		_danceUI.Active();
-		_isRequestShake = true;
-		_danceUI.SetRequestShake(_isRequestShake);
 		_disposable = new SingleAssignmentDisposable();
+		// 最初は1秒待機する
 		_disposable.Disposable = Observable
-			.Timer(TimeSpan.FromSeconds(10))
+			.Timer(TimeSpan.FromSeconds(1))
 			.Subscribe(_ =>
 			{
-				_isRequestShake = false;
+				_danceCollider.enabled = true;
+				_particle = ParticleManager.Play("DanceNow", new Vector3(), transform);
+				_isRequestShake = true;
 				_danceUI.SetRequestShake(_isRequestShake);
 				Observable
 					.Timer(TimeSpan.FromSeconds(10))
-					.Subscribe(x => 
+					.Subscribe(__ =>
 					{
-						_isRequestShake = true;
+						_isRequestShake = false;
 						_danceUI.SetRequestShake(_isRequestShake);
 						Observable
 							.Timer(TimeSpan.FromSeconds(10))
-							.Subscribe(e => End());
+							.Subscribe(___ =>
+							{
+								_isRequestShake = true;
+								_danceUI.SetRequestShake(_isRequestShake);
+								Observable
+									.Timer(TimeSpan.FromSeconds(10))
+									.Subscribe(e => End());
+							});
 					});
 			});
 	}
@@ -139,7 +152,8 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public void End()
 	{
-		if (_isTransing) return;
+		if (_isTransing)
+			return;
 
 		OnEndDance.Invoke();
 		_danceUI.SetResult(IsSuccess);
@@ -193,7 +207,7 @@ public class Dance : MonoBehaviour
 	{
 		_giveFanPoint += addValue;
 		_danceUI.SetPointColor(addValue > 0 ? new Color(0.0f, 1.0f, 0.0f) : new Color(1.0f, 0.0f, 0.0f));
-		if(_giveFanPoint >= 30)
+		if (_giveFanPoint >= 30)
 		{
 			_isSuccess = true;
 			_danceUI.SetPointColor(new Color(0.0f, 0.0f, 1.0f));
