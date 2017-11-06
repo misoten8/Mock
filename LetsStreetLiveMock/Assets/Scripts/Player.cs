@@ -31,35 +31,44 @@ public class Player : MonoBehaviour
 	[SerializeField]
 	private Dance _dance;
 
+	// wiiリモコン
 	private Wiimote _wm;
-	private bool _wmActive = false;
+	private int _wmNum;
 
 	void Start()
 	{
 		// wiiリモコン初期化処理
 		WiimoteManager.FindWiimotes();
-		_wm = WiimoteManager.Wiimotes[0];
-		_wm.InitWiiMotionPlus();
-		_wm.SendPlayerLED(true, false, false, false);
-		_wmActive = false;
+		if (WiimoteManager.HasWiimote())
+		{
+			_wmNum = (int)_type - 1;
+			_wm = WiimoteManager.Wiimotes[_wmNum];
+			_wm.InitWiiMotionPlus();
+			_wm.Speaker.Init();
+			int i = _wmNum + 1;
+			_wm.SendPlayerLED(i == 1, i == 2, i == 3, i == 4);
+		}
 	}
 
 	void Update()
 	{
 		if (!_dance.IsPlaying)
 		{
-			_wm = WiimoteManager.Wiimotes[0];
-			_wm.ReadWiimoteData();
-			if (Input.GetKey("up") || _wm.Button.d_right) _rb.AddForce(Vector3.forward * _power);
-			if (Input.GetKey("left") || _wm.Button.d_up) _rb.AddForce(Vector3.left * _power);
-			if (Input.GetKey("right") || _wm.Button.d_down) _rb.AddForce(Vector3.right * _power);
-			if (Input.GetKey("down") || _wm.Button.d_left) _rb.AddForce(Vector3.back * _power);
-
-			//if (Input.GetKeyDown("j")) _rb.AddForce(Vector3.up * _power / 20, ForceMode.Impulse);
-			if (Input.GetKeyDown("k") || _wm.Button.two)
+			if (WiimoteManager.HasWiimote(_wmNum))
 			{
-				_dance.Begin();
-				//_animator.SetBool("PlayDance", true);
+				_wm = WiimoteManager.Wiimotes[_wmNum];
+				_wm.ReadWiimoteData();
+				if (Input.GetKey("up") || _wm.Button.d_right) _rb.AddForce(Vector3.forward * _power);
+				if (Input.GetKey("left") || _wm.Button.d_up) _rb.AddForce(Vector3.left * _power);
+				if (Input.GetKey("right") || _wm.Button.d_down) _rb.AddForce(Vector3.right * _power);
+				if (Input.GetKey("down") || _wm.Button.d_left) _rb.AddForce(Vector3.back * _power);
+
+				//if (Input.GetKeyDown("j")) _rb.AddForce(Vector3.up * _power / 20, ForceMode.Impulse);
+				if (Input.GetKeyDown("k") || _wm.Button.two)
+				{
+					_dance.Begin();
+					//_animator.SetBool("PlayDance", true);
+				}
 			}
 		}
 		else
