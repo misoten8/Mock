@@ -18,7 +18,7 @@ public class Billboard : MonoBehaviour
 		_camera = Camera.allCameras.First(x => x.targetDisplay == _targetDisplayIndex).transform;
 	}
 
-	void Update ()
+	void Update()
 	{
 		Vector3 p = _camera.position;
 		p.y = transform.position.y;

@@ -14,7 +14,7 @@ public class FanPoint : MonoBehaviour
 	}
 
 	[SerializeField]
-	private People _people;
+	private Mob _people;
 
 	/// <summary>
 	/// マテリアルを設定する対象メッシュ

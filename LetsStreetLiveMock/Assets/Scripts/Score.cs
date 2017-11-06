@@ -18,6 +18,8 @@ public class Score : MonoBehaviour
 	private void Update()
 	{
 		OnScoreUpdate?.Invoke();
+
+		// 影響力の設定
 	}
 
 	/// <summary>

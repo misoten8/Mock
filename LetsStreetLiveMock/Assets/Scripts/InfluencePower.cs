@@ -3,6 +3,7 @@ using System.Linq;
 
 /// <summary>
 /// プレイヤーの影響力（注目度）を設定、格納するクラス
+/// Scoreから影響力に変換する
 /// 製作者：実川
 /// </summary>
 public class InfluencePower : MonoBehaviour
