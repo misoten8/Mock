@@ -19,6 +19,20 @@ namespace Misoten8Utility
 
 	public static class EnumerableExtensions
 	{
+		public static Decimal[] SumDoubleArray(this IEnumerable<Decimal[][]> element, int arraySize)
+		{
+			Decimal[] result = element
+				.SelectMany(x => x.Select(e =>
+				{
+					Decimal num1 = new Decimal(0);
+					foreach (Decimal num2 in e)
+						num1 += num2;
+					return num1;
+				})).ToArray();
+
+			return result;
+		}
+
 		/// <summary>
 		/// 選択した範囲の要素を取り出す
 		/// </summary>

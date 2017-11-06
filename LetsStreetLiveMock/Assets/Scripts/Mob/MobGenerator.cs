@@ -2,6 +2,7 @@
 using UnityEngine;
 using Misoten8Utility;
 using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// モブキャラ生成 クラス
@@ -53,6 +54,12 @@ public class MobGenerator : MonoBehaviour
 		GameObject people = Instantiate(_peplePrefab[Random.Range(0, 3)]);
 		people.transform.position = transform.position + new Vector3(Random.Range(-_rangeSize.x, _rangeSize.x), 0, Random.Range(-_rangeSize.y, _rangeSize.y));
 		_list.Add(people.GetComponent<Mob>());
+		//foreach(Mob element in _list )
+		//{
+		//	element.FanPointArray.Sum();
+		//}
+	//	_list.Select(e => e.FanPointArray).ToArray().SumDoubleArray(4)
+		//.SumArray(3).ToArray();	
 	}
 
 	private IEnumerator Enumerator()

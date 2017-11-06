@@ -13,6 +13,8 @@ public class MobController : MonoBehaviour
 	[SerializeField]
 	private FollowMove _followMove;
 
+	[SerializeField]
+	private WanderMove _wanderMove;
 
 	void Start()
 	{
@@ -21,9 +23,11 @@ public class MobController : MonoBehaviour
 			if (_mob.FunType != Define.PlayerType.None)
 			{
 				_followMove.OnStart(_mob.funPlayer.transform);
+				_wanderMove.enabled = false;
 			}
 			else
 			{
+				_wanderMove.OnStart();
 				_followMove.enabled = false;
 			}
 		};
@@ -37,6 +41,7 @@ public class MobController : MonoBehaviour
 		};
 
 		// 最初は徘徊移動モードにする
+		_wanderMove.OnStart();
 	}
 
 }
