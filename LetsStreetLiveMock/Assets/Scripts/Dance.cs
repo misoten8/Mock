@@ -41,6 +41,14 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public Action OnEndDance;
 
+	public Player Player
+	{
+		get { return _player; }
+	}
+
+	[SerializeField]
+	private Player _player;
+
 	[SerializeField]
 	private Camera _camera;
 
@@ -49,9 +57,6 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	[SerializeField]
 	private SphereCollider _danceCollider;
-
-	[SerializeField]
-	private Player _player;
 
 	[SerializeField]
 	private DanceUI _danceUI;
@@ -64,6 +69,8 @@ public class Dance : MonoBehaviour
 	private bool _isSuccess = false;
 
 	private bool _isRequestShake = false;
+
+	private GameObject _particle;
 
 	/// <summary>
 	/// 処理中かどうか
@@ -86,12 +93,14 @@ public class Dance : MonoBehaviour
 	{
 		if (IsPlaying)
 		{
-			if (_isTransing) return;
+			if (_isTransing)
+				return;
 			_wm = WiimoteManager.Wiimotes[(int)_player.Type - 1];
 			_wm.ReadWiimoteData();
 			if (Input.GetKeyDown("return") || _wm.MotionPlus.GetSwing())
 			{
 				ChangeFanPoint(_isRequestShake ? 1 : -1);
+				ParticleManager.Play(_isRequestShake ? "DanceNowClear" : "DanceNowFailed", new Vector3(), transform);
 			}
 			_danceUI.SetPointUpdate(_giveFanPoint);
 		}
@@ -108,24 +117,32 @@ public class Dance : MonoBehaviour
 		_danceCollider.enabled = true;
 		SetCamera(true);
 		_danceUI.Active();
-		_isRequestShake = true;
-		_danceUI.SetRequestShake(_isRequestShake);
 		_disposable = new SingleAssignmentDisposable();
+		// 最初は1秒待機する
 		_disposable.Disposable = Observable
-			.Timer(TimeSpan.FromSeconds(10))
+			.Timer(TimeSpan.FromSeconds(1))
 			.Subscribe(_ =>
 			{
-				_isRequestShake = false;
+				_danceCollider.enabled = true;
+				_particle = ParticleManager.Play("DanceNow", new Vector3(), transform);
+				_isRequestShake = true;
 				_danceUI.SetRequestShake(_isRequestShake);
 				Observable
 					.Timer(TimeSpan.FromSeconds(10))
-					.Subscribe(x =>
+					.Subscribe(__ =>
 					{
-						_isRequestShake = true;
+						_isRequestShake = false;
 						_danceUI.SetRequestShake(_isRequestShake);
 						Observable
 							.Timer(TimeSpan.FromSeconds(10))
-							.Subscribe(e => End());
+							.Subscribe(___ =>
+							{
+								_isRequestShake = true;
+								_danceUI.SetRequestShake(_isRequestShake);
+								Observable
+									.Timer(TimeSpan.FromSeconds(10))
+									.Subscribe(e => End());
+							});
 					});
 			});
 	}
@@ -135,10 +152,12 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public void End()
 	{
-		if (_isTransing) return;
+		if (_isTransing)
+			return;
 
 		OnEndDance.Invoke();
 		_danceUI.SetResult(IsSuccess);
+		Destroy(_particle);
 		_isTransing = true;
 		Observable
 			.Timer(TimeSpan.FromSeconds(3))
@@ -164,6 +183,7 @@ public class Dance : MonoBehaviour
 			_danceUI.NotActive();
 			SetCamera(false);
 			_danceCollider.enabled = false;
+			Destroy(_particle);
 			// スコアを設定する
 			_giveFanPoint = 0;
 			_disposable.Dispose();

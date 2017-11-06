@@ -308,8 +308,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 221819147}
-  _danceCollider: {fileID: 134893254}
   _camera: {fileID: 1866917639}
+  _danceCollider: {fileID: 134893254}
   _danceUI: {fileID: 2093537535}
 --- !u!1001 &221819143
 Prefab:
@@ -424,7 +424,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1647451729298192, guid: 5b5719f82e355574e8d20573e708aa23, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5b5719f82e355574e8d20573e708aa23, type: 2}
@@ -594,8 +594,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 1612624961}
-  _danceCollider: {fileID: 421753086}
   _camera: {fileID: 1958311454}
+  _danceCollider: {fileID: 421753086}
   _danceUI: {fileID: 272933900}
 --- !u!135 &421753086
 SphereCollider:
@@ -1110,8 +1110,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 1334522312}
-  _danceCollider: {fileID: 618399136}
   _camera: {fileID: 1452098318}
+  _danceCollider: {fileID: 618399136}
   _danceUI: {fileID: 1618664262}
 --- !u!1 &642969528
 GameObject:
@@ -1267,8 +1267,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 60955480}
-  _danceCollider: {fileID: 871764279}
   _camera: {fileID: 1793189273}
+  _danceCollider: {fileID: 871764279}
   _danceUI: {fileID: 1313955946}
 --- !u!114 &874938364 stripped
 MonoBehaviour:
@@ -1800,7 +1800,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1223843079267718, guid: 73ef1557cb433344b93ac132a792329d, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 73ef1557cb433344b93ac132a792329d, type: 2}
@@ -2227,7 +2227,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1647451729298192, guid: 5b5719f82e355574e8d20573e708aa23, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5b5719f82e355574e8d20573e708aa23, type: 2}
