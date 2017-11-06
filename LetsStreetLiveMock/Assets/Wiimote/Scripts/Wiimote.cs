@@ -340,8 +340,8 @@ public class Wiimote
     /// If there is no Wii Motion Plus connected, undefined behavior may occur on the Wii Remote.
     public bool ActivateWiiMotionPlus()
     {
-        if (!wmp_attached)
-            Debug.LogWarning("There is a request to activate the Wii Motion Plus even though it has not been confirmed to exist!  Trying anyway.");
+        //if (!wmp_attached)
+            //Debug.LogWarning("There is a request to activate the Wii Motion Plus even though it has not been confirmed to exist!  Trying anyway.");
 
         // Initialize the Wii Motion Plus by writing 0x55 to register 0xA600F0
         int res = SendRegisterWriteRequest(RegisterType.CONTROL, 0xA600F0, new byte[] { 0x55 });
@@ -634,7 +634,7 @@ public class Wiimote
                 {
                     if (Status.ext_connected)                // The Wii Remote doesn't allow reading from the extension identifier
                     {                                        // when nothing is connected.
-                        Debug.Log("An extension has been connected.");
+                       // Debug.Log("An extension has been connected.");
                         if (current_ext != ExtensionController.MOTIONPLUS)
                         {
                             ActivateExtension();

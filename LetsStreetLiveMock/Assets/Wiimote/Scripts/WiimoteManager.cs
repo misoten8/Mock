@@ -129,6 +129,12 @@ public class WiimoteManager
         return !(Wiimotes.Count <= 0 || Wiimotes[0] == null || Wiimotes[0].hidapi_handle == IntPtr.Zero);
     }
 
+	public static bool HasWiimote(int num)
+	{
+		return !(Wiimotes.Count <= num || Wiimotes[num] == null || Wiimotes[num].hidapi_handle == IntPtr.Zero);
+	}
+
+
     /// \brief Sends RAW DATA to the given bluetooth HID device.  This is essentially a wrapper around HIDApi.
     /// \param hidapi_wiimote The HIDApi device handle to write to.
     /// \param data The data to write.
@@ -194,5 +200,14 @@ public class WiimoteManager
         public IntPtr pointer;
         public byte[] data;
     }
+
+	public Wiimote GetWiimote(int num)
+	{
+		if (num <= Wiimotes.Count)
+		{
+			return WiimoteManager.Wiimotes[num];
+		}
+		return null;
+	}
 }
 } // namespace WiimoteApi

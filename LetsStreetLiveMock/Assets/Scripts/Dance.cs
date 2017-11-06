@@ -15,7 +15,7 @@ public class Dance : MonoBehaviour
 	{
 		get { return _player.Type; }
 	}
-	
+
 	public bool IsPlaying
 	{
 		get { return _danceCollider.enabled; }
@@ -87,7 +87,7 @@ public class Dance : MonoBehaviour
 		if (IsPlaying)
 		{
 			if (_isTransing) return;
-			_wm = WiimoteManager.Wiimotes[0];
+			_wm = WiimoteManager.Wiimotes[(int)_player.Type - 1];
 			_wm.ReadWiimoteData();
 			if (Input.GetKeyDown("return") || _wm.MotionPlus.GetSwing())
 			{
@@ -119,7 +119,7 @@ public class Dance : MonoBehaviour
 				_danceUI.SetRequestShake(_isRequestShake);
 				Observable
 					.Timer(TimeSpan.FromSeconds(10))
-					.Subscribe(x => 
+					.Subscribe(x =>
 					{
 						_isRequestShake = true;
 						_danceUI.SetRequestShake(_isRequestShake);
@@ -188,7 +188,7 @@ public class Dance : MonoBehaviour
 	{
 		_giveFanPoint += addValue;
 		_danceUI.SetPointColor(addValue > 0 ? new Color(0.0f, 1.0f, 0.0f) : new Color(1.0f, 0.0f, 0.0f));
-		if(_giveFanPoint >= 30)
+		if (_giveFanPoint >= 30)
 		{
 			_isSuccess = true;
 			_danceUI.SetPointColor(new Color(0.0f, 0.0f, 1.0f));
