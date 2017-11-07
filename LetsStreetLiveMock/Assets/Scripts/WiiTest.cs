@@ -29,9 +29,6 @@ public class WiiTest : MonoBehaviour
 	private Vector3 wmpOffset = Vector3.zero;   // ジャイロオフセット
 	private bool wmSwing;                       // 振っているかどうか
 	private Vector3 wmAccel = Vector3.zero;
-	private Vector3 wmAccelOld = Vector3.zero;
-
-	public AudioClip sound;
 
 	// 初期化処理
 	void Start()
