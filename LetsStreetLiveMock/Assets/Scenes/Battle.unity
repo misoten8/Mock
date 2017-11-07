@@ -247,6 +247,7 @@ MonoBehaviour:
   _type: 1
   _rb: {fileID: 60955479}
   _power: 200
+  _rotatePower: 3
   _animator: {fileID: 60955481}
   _dance: {fileID: 871764280}
 --- !u!95 &60955481 stripped
@@ -475,6 +476,7 @@ MonoBehaviour:
   _type: 3
   _rb: {fileID: 221819146}
   _power: 200
+  _rotatePower: 3
   _animator: {fileID: 221819148}
   _dance: {fileID: 134893255}
 --- !u!95 &221819148 stripped
@@ -1851,6 +1853,7 @@ MonoBehaviour:
   _type: 2
   _rb: {fileID: 1334522313}
   _power: 200
+  _rotatePower: 3
   _animator: {fileID: 1334522314}
   _dance: {fileID: 618399137}
 --- !u!54 &1334522313
@@ -2276,6 +2279,7 @@ MonoBehaviour:
   _type: 4
   _rb: {fileID: 1612624963}
   _power: 200
+  _rotatePower: 3
   _animator: {fileID: 1612624959}
   _dance: {fileID: 421753085}
 --- !u!135 &1612624962

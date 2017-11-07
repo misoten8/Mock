@@ -26,6 +26,9 @@ public class Player : MonoBehaviour
 	private float _power;
 
 	[SerializeField]
+	private float _rotatePower;
+
+	[SerializeField]
 	private Animator _animator;
 
 	[SerializeField]
@@ -54,32 +57,26 @@ public class Player : MonoBehaviour
 	{
 		if (!_dance.IsPlaying)
 		{
-			//if (WiimoteManager.HasWiimote(_wmNum))
-			//{
-			//	_wm = WiimoteManager.Wiimotes[_wmNum];
-			//	_wm.ReadWiimoteData();
-			//}
-			if (Input.GetKey("up") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_RIGHT)) _rb.AddForce(Vector3.forward * _power);
-			//if (Input.GetKey("up") || _wm.Button.d_right) _rb.AddForce(Vector3.forward * _power);
-			if (Input.GetKey("left") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_UP)) _rb.AddForce(Vector3.left * _power);
-			if (Input.GetKey("right") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_DOWN)) _rb.AddForce(Vector3.right * _power);
-			if (Input.GetKey("down") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_LEFT)) _rb.AddForce(Vector3.back * _power);
+			if (Input.GetKey("up") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_RIGHT))
+				_rb.AddForce(transform.forward * _power);
+			if (Input.GetKey("left") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_UP))
+				transform.Rotate(Vector3.up, -_rotatePower);
+			if (Input.GetKey("right") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_DOWN))
+				transform.Rotate(Vector3.up, _rotatePower);
+			if (Input.GetKey("down") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_LEFT))
+				_rb.AddForce(-transform.forward * _power);
 
-			//if (Input.GetKeyDown("j")) _rb.AddForce(Vector3.up * _power / 20, ForceMode.Impulse);
 			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_TWO))
 			{
 				_dance.Begin();
-				//_animator.SetBool("PlayDance", true);
 			}
 		}
 		else
 		{
-			if (Input.GetKeyDown("k"))
+			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_ONE))
 			{
-				//_animator.SetBool("PlayDance", false);
 				_dance.Cancel();
 			}
 		}
-		//_animator.SetFloat("Velocity", (Mathf.Abs(_rb.velocity.x) + Mathf.Abs(_rb.velocity.z)) / 2.0f);
 	}
 }
