@@ -39,9 +39,9 @@ public class Player : MonoBehaviour
 	{
 		// wiiリモコン初期化処理
 		WiimoteManager.FindWiimotes();
-		if (WiimoteManager.HasWiimote())
+		_wmNum = (int)_type - 1;
+		if (WiimoteManager.HasWiimote(_wmNum))
 		{
-			_wmNum = (int)_type - 1;
 			_wm = WiimoteManager.Wiimotes[_wmNum];
 			_wm.InitWiiMotionPlus();
 			_wm.Speaker.Init();
