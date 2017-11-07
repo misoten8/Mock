@@ -209,5 +209,69 @@ public class WiimoteManager
 		}
 		return null;
 	}
+
+	public static bool GetSwing(int num)
+	{
+		if (!HasWiimote(num)) return false;
+			if (!Wiimotes[num].wmp_attached) return false;
+			Wiimotes[num].ReadWiimoteData();
+		if (Wiimotes[num].MotionPlus.GetSwing(num)) return true;
+
+		return false;
+	}
+
+	public static bool GetButton(int wmNum ,int buttonNum)
+	{
+		if (!HasWiimote(wmNum)) return false;
+
+		bool down = false;
+		Wiimotes[wmNum].ReadWiimoteData();
+		switch (buttonNum)
+		{
+				case ButtonData.WMBUTTON_A:
+					down = Wiimotes[wmNum].Button.a ? true : false;
+					break;
+				case ButtonData.WMBUTTON_B:
+					down = Wiimotes[wmNum].Button.b ? true : false;
+					break;
+
+				case ButtonData.WMBUTTON_DOWN:
+					down = Wiimotes[wmNum].Button.d_down ? true : false;
+					break;
+
+				case ButtonData.WMBUTTON_HOME:
+					down = Wiimotes[wmNum].Button.home ? true : false;
+					break;
+
+				case ButtonData.WMBUTTON_LEFT:
+					down = Wiimotes[wmNum].Button.d_left ? true : false;
+					break;
+
+				case ButtonData.WMBUTTON_MINUS:
+					down = Wiimotes[wmNum].Button.minus ? true : false;
+					break;
+
+				case ButtonData.WMBUTTON_ONE:
+					down = Wiimotes[wmNum].Button.one ? true : false;
+					break;
+
+				case ButtonData.WMBUTTON_PLUS:
+					down = Wiimotes[wmNum].Button.plus ? true : false;
+					break;
+
+				case ButtonData.WMBUTTON_RIGHT:
+					down = Wiimotes[wmNum].Button.d_right ? true : false;
+					break;
+
+				case ButtonData.WMBUTTON_TWO:
+					down = Wiimotes[wmNum].Button.two ? true : false;
+					break;
+
+				case ButtonData.WMBUTTON_UP:
+					down = Wiimotes[wmNum].Button.d_up ? true : false;
+					break;
+			}
+		return down;
+	}
 }
 } // namespace WiimoteApi

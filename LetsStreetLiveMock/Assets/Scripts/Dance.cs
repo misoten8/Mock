@@ -80,13 +80,16 @@ public class Dance : MonoBehaviour
 	private SingleAssignmentDisposable _disposable = null;
 
 	// wiiリモコン
-	Wiimote _wm;
+	private Wiimote _wm;
+	private int _wmNum;
 
 	private void Start()
 	{
 		_danceCollider.enabled = false;
 		_danceUI.NotActive();
 		_giveFanPoint = 0;
+
+		_wmNum = (int)_player.Type - 1;
 	}
 
 	void Update()
@@ -95,9 +98,7 @@ public class Dance : MonoBehaviour
 		{
 			if (_isTransing)
 				return;
-			_wm = WiimoteManager.Wiimotes[(int)_player.Type - 1];
-			_wm.ReadWiimoteData();
-			if (Input.GetKeyDown("return") || _wm.MotionPlus.GetSwing())
+			if (Input.GetKeyDown("return") || WiimoteManager.GetSwing( _wmNum))
 			{
 				ChangeFanPoint(_isRequestShake ? 1 : -1);
 				ParticleManager.Play(_isRequestShake ? "DanceNowClear" : "DanceNowFailed", new Vector3(), transform);

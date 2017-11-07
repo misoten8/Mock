@@ -1,4 +1,8 @@
-﻿namespace WiimoteApi {
+﻿using WiimoteApi;
+using WiimoteApi.Util;
+using WiimoteApi.Internal;
+
+namespace WiimoteApi {
     public class MotionPlusData : WiimoteData
     {
         /// The rotational velocity in the Pitch direction of the Wii Remote, as
@@ -127,8 +131,9 @@
             _RollSpeed = 0;
         }
 
-		public bool GetSwing()
+		public bool GetSwing( int num)
 		{
+			if (!WiimoteManager.HasWiimote(num) )return false;
 			bool swing = false;
 			float ac = 0.0f;
 

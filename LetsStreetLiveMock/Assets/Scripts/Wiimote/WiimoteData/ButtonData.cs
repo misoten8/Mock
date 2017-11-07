@@ -36,6 +36,18 @@
         public bool home { get { return _home; } }
         private bool _home;
 
+		public const int WMBUTTON_A = 0;
+		public const int WMBUTTON_B = 1;
+		public const int WMBUTTON_ONE = 2;
+		public const int WMBUTTON_TWO = 3;
+		public const int WMBUTTON_PLUS = 4;
+		public const int WMBUTTON_MINUS = 5;
+		public const int WMBUTTON_UP = 6;
+		public const int WMBUTTON_DOWN = 7;
+		public const int WMBUTTON_LEFT = 8;
+		public const int WMBUTTON_RIGHT = 9;
+		public const int WMBUTTON_HOME = 10;
+
         public ButtonData(Wiimote Owner) : base(Owner) { }
 
         public override bool InterpretData(byte[] data)
