@@ -6,13 +6,8 @@ using UnityEngine;
 /// パーティクル管理
 /// 製作者：実川
 /// </summary>
-public class ParticleManager : MonoBehaviour
+public class ParticleManager : SingletonMonoBehaviour<ParticleManager>
 {
-	/// <summary>
-	/// インスタンス
-	/// </summary>
-	static ParticleManager m_instance = null;
-
 	/// <summary>
 	/// パーティクルプレハブリスト
 	/// </summary>
@@ -23,18 +18,9 @@ public class ParticleManager : MonoBehaviour
 	/// </summary>
 	List<GameObject> m_instanceList = new List<GameObject>();
 
-	void Awake()
+	void Start()
 	{
-		if (m_instance == null)
-		{
-			m_instance = this;
-			DontDestroyOnLoad(gameObject);
-			Load();
-		}
-		else
-		{
-			Destroy(gameObject);
-		}
+		Load();
 	}
 
 	/// <summary>
@@ -44,9 +30,9 @@ public class ParticleManager : MonoBehaviour
 	{
 		GameObject[] array = Resources.LoadAll<GameObject>("Prefabs/Particles");
 
-		foreach(GameObject element in array)
+		foreach (GameObject element in array)
 		{
-			m_instance.m_prefabList.Add(element);
+			Instance.m_prefabList.Add(element);
 		}
 	}
 
@@ -58,13 +44,14 @@ public class ParticleManager : MonoBehaviour
 	/// <param name="parent">親</param>
 	public static GameObject Play(string fileName, Vector3 pos = new Vector3(), Transform parent = null)
 	{
-		foreach(GameObject element in m_instance.m_prefabList)
+		foreach (GameObject element in Instance.m_prefabList)
 		{
-			if (element.name != fileName) continue;
+			if (element.name != fileName)
+				continue;
 
 			GameObject instance;
 
-			if(parent == null)
+			if (parent == null)
 			{
 				// ワールド座標
 				instance = Instantiate(element);
@@ -77,7 +64,7 @@ public class ParticleManager : MonoBehaviour
 				instance.transform.localPosition = pos;
 			}
 
-			m_instance.m_instanceList.Add(instance);
+			Instance.m_instanceList.Add(instance);
 			return instance;
 		}
 		return null;
@@ -88,12 +75,13 @@ public class ParticleManager : MonoBehaviour
 	/// </summary>
 	public static void ResetAll()
 	{
-		if (m_instance.m_instanceList.Count == 0) return;
+		if (Instance.m_instanceList.Count == 0)
+			return;
 
-		foreach(GameObject element in m_instance.m_instanceList)
+		foreach (GameObject element in Instance.m_instanceList)
 		{
 			Destroy(element);
 		}
-		m_instance.m_instanceList.Clear();
+		Instance.m_instanceList.Clear();
 	}
 }

@@ -78,7 +78,7 @@ public class WanderMove : MonoBehaviour
 					_moveDirection = new Vector3(Mathf.Sin(rotationY) * 1, 0, Mathf.Cos(rotationY) * 1);
 
 					Observable
-						.Timer(TimeSpan.FromSeconds(5))
+						.Timer(TimeSpan.FromSeconds(UnityEngine.Random.Range(1, 9)))
 						.Subscribe(e => 
 						{
 							_state = State.Stop;
@@ -100,7 +100,7 @@ public class WanderMove : MonoBehaviour
 					_isFirstFrame = false;
 
 					Observable
-						.Timer(TimeSpan.FromSeconds(3))
+						.Timer(TimeSpan.FromSeconds(UnityEngine.Random.Range(1, 9)))
 						.Subscribe(e =>
 						{
 							_state = State.Move;

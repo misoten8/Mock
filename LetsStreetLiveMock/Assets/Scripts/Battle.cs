@@ -7,6 +7,11 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class Battle : MonoBehaviour
 {
+	private void Start()
+	{
+		AudioManager.PlayBGM("DJ Striden - Lights [Dream Trance]");
+	}
+
 	private void OnGUI()
 	{
 		GUI.Label(new Rect(new Vector2(0, 0), new Vector2(300, 200)) ,"Battle Scene");
