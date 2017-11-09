@@ -17,6 +17,7 @@ public class BattleTime : MonoBehaviour
 	[SerializeField]
 	private float _limitTime;
 
+	[SerializeField]
 	private float _currentTime = 0.0f;
 
 	private void Start()
