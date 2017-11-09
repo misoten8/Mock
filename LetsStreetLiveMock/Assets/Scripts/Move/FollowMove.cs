@@ -5,7 +5,7 @@ using UnityEngine;
 /// 追従移動 クラス
 /// 製作者：実川
 /// </summary>
-public class FollowMove : MonoBehaviour
+public class FollowMove : MonoBehaviour, IMove
 {
 	/// <summary>
 	/// 遷移条件判定イベント

@@ -16,6 +16,8 @@ public class MobController : MonoBehaviour
 	[SerializeField]
 	private WanderMove _wanderMove;
 
+	private IMove _currentMove;
+
 	void Start()
 	{
 		_mob.onChangeFun += () =>
@@ -24,11 +26,13 @@ public class MobController : MonoBehaviour
 			{
 				_followMove.OnStart(_mob.funPlayer.transform);
 				_wanderMove.enabled = false;
+				_currentMove = _followMove;
 			}
 			else
 			{
 				_wanderMove.OnStart();
 				_followMove.enabled = false;
+				_currentMove = _wanderMove;
 			}
 		};
 

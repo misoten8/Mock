@@ -6,7 +6,7 @@ using UnityEngine;
 /// 徘徊移動 クラス
 /// 製作者：実川
 /// </summary>
-public class WanderMove : MonoBehaviour
+public class WanderMove : MonoBehaviour, IMove
 {
 	private enum State
 	{
@@ -78,7 +78,7 @@ public class WanderMove : MonoBehaviour
 					_moveDirection = new Vector3(Mathf.Sin(rotationY) * 1, 0, Mathf.Cos(rotationY) * 1);
 
 					Observable
-						.Timer(TimeSpan.FromSeconds(UnityEngine.Random.Range(6, 18)))
+						.Timer(TimeSpan.FromSeconds(UnityEngine.Random.Range(1, 3)))
 						.Subscribe(e => 
 						{
 							_state = State.Stop;
@@ -100,7 +100,7 @@ public class WanderMove : MonoBehaviour
 					_isFirstFrame = false;
 
 					Observable
-						.Timer(TimeSpan.FromSeconds(UnityEngine.Random.Range(3, 9)))
+						.Timer(TimeSpan.FromSeconds(UnityEngine.Random.Range(1, 3)))
 						.Subscribe(e =>
 						{
 							_state = State.Move;

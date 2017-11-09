@@ -99,6 +99,8 @@ public class Mob : MonoBehaviour
 
 		Dance playerDance = other.gameObject.GetComponent<Dance>();
 
+
+
 		// メソッドをスタック
 		playerDance.OnEndDance += () =>
 		{

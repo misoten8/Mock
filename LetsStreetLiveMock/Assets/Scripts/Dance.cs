@@ -116,6 +116,7 @@ public class Dance : MonoBehaviour
 		_danceCollider.enabled = true;
 		SetCamera(true);
 		_danceUI.Active();
+		// 足止め
 		_disposable = new SingleAssignmentDisposable();
 		// 最初は1秒待機する
 		_disposable.Disposable = Observable
