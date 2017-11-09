@@ -2,8 +2,6 @@
 using UnityEngine;
 using UniRx;
 using WiimoteApi;
-using WiimoteApi.Internal;
-using WiimoteApi.Util;
 
 /// <summary>
 /// ダンス クラス

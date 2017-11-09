@@ -25,7 +25,7 @@ public class Score : MonoBehaviour
 	/// <summary>
 	/// 指定したプレイヤーのスコアを変更する
 	/// </summary>
-	public void SetScore(Define.PlayerType playerType, int addValue)
+	public void SetScore(Define.PlayerType playerType, int value)
 	{
 		if ((int)playerType < 0 || (int)playerType >= Define.METER_NUM_MAX)
 		{
@@ -33,8 +33,8 @@ public class Score : MonoBehaviour
 			return;
 		}
 
-		// スコアを加算する
-		_valueArray[(int)playerType] += addValue;
+		// スコアを設定する
+		_valueArray[(int)playerType] = value;
 
 		// 影響力を設定する
 		_ip.SetPlayerScoreArray(_valueArray.Select(x => (float)x).ToArray());

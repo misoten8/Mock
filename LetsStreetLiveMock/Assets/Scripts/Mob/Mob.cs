@@ -18,9 +18,6 @@ public class Mob : MonoBehaviour
 	private Define.FanLevel _fanLevel;
 
 	[SerializeField]
-	private Score _score;
-
-	[SerializeField]
 	private FanPoint _fanPoint;
 
 	[SerializeField]
@@ -76,13 +73,22 @@ public class Mob : MonoBehaviour
 
 	private Player _funPlayer = null;
 
+	private MobManager _mobManager;
+
+	public void OnAwake(MobGenerator.MobCaches mobCaches)
+	{
+		_mobManager = mobCaches.mobManager;
+	}
+
 	private void Start()
 	{
-		_score = GameObject.Find("BattleManager").GetComponent<Score>();
+		//_score = GameObject.Find("BattleManager").GetComponent<Score>();
 		// 無所属に全てのファンポイントを設定
 		_fanPointArray[0] = Define.FanPointArray[(int)_fanLevel];
+
 		// ファンタイプの更新
 		_funType = (Define.PlayerType)_fanPointArray.FindIndexMax();
+
 		// アウトラインの更新
 		_meshRenderer.materials[1].color = GetColor(_funType);
 	}
@@ -98,18 +104,26 @@ public class Mob : MonoBehaviour
 		{
 			// 好感度を設定
 			SetFanPoint(playerDance.PlayerType, playerDance.GiveFanPoint);
+
+			// モブキャラ管理クラスにスコア変更を通知
+			_mobManager.OnScoreChange();
+
 			// 好感度ビルボードのマテリアルを更新
 			_fanPoint.UpdateMaterial();
+
 			// ファンタイプが変更したかチェックする
 			Define.PlayerType newFunType = (Define.PlayerType)_fanPointArray.FindIndexMax();
 			if (_funType != newFunType)
 			{
 				// ファンタイプの更新
 				_funType = newFunType;
+
 				// 推しているプレイヤーの更新
 				_funPlayer = playerDance.Player;
+
 				// アウトラインの更新
 				_meshRenderer.materials[1].color = GetColor(_funType);
+
 				// イベント処理の実行
 				onChangeFun?.Invoke();
 			}

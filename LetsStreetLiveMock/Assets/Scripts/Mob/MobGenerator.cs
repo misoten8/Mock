@@ -11,6 +11,18 @@ using System.Linq;
 public class MobGenerator : MonoBehaviour
 {
 	/// <summary>
+	/// モブ管理クラス
+	/// </summary>
+	[SerializeField]
+	private MobManager _mobManager;
+
+	/// <summary>
+	/// スコア
+	/// </summary>
+	[SerializeField]
+	private Score _score;
+
+	/// <summary>
 	/// 人のプレハブ
 	/// </summary>
 	[SerializeField]
@@ -35,9 +47,19 @@ public class MobGenerator : MonoBehaviour
 	private Vector2 _rangeSize;
 
 	/// <summary>
-	/// 人のリスト
+	///　初期化時に渡すキャッシュクラス
 	/// </summary>
-	private List<Mob> _list = new List<Mob>();
+	public struct MobCaches
+	{
+		public MobManager mobManager;
+
+		public MobCaches(MobManager MobManager)
+		{
+			mobManager = MobManager;
+		}
+	}
+
+	private MobCaches _mobCaches;
 
 	public void CreateStart()
 	{
@@ -46,6 +68,7 @@ public class MobGenerator : MonoBehaviour
 
 	void Start()
 	{
+		_mobCaches = new MobCaches(_mobManager);
 		CreateStart();
 	}
 
@@ -53,12 +76,15 @@ public class MobGenerator : MonoBehaviour
 	{
 		GameObject people = Instantiate(_peplePrefab[Random.Range(0, 3)]);
 		people.transform.position = transform.position + new Vector3(Random.Range(-_rangeSize.x, _rangeSize.x), 0, Random.Range(-_rangeSize.y, _rangeSize.y));
-		_list.Add(people.GetComponent<Mob>());
+
+		var mob = people.GetComponent<Mob>();
+		mob.OnAwake(_mobCaches);
+		_mobManager.Mobs.Add(mob);
 		//foreach(Mob element in _list )
 		//{
 		//	element.FanPointArray.Sum();
 		//}
-	//	_list.Select(e => e.FanPointArray).ToArray().SumDoubleArray(4)
+		//	_list.Select(e => e.FanPointArray).ToArray().SumDoubleArray(4)
 		//.SumArray(3).ToArray();	
 	}
 

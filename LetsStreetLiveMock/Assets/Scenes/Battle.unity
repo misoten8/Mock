@@ -991,6 +991,7 @@ GameObject:
   - component: {fileID: 594352202}
   - component: {fileID: 594352201}
   - component: {fileID: 594352203}
+  - component: {fileID: 594352204}
   m_Layer: 0
   m_Name: BattleManager
   m_TagString: Untagged
@@ -1058,6 +1059,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _battle: {fileID: 594352199}
   _limitTime: 300
+--- !u!114 &594352204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 594352198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cb1944c0c3e6e54f9f15cc365d6df40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _score: {fileID: 594352201}
 --- !u!1 &618399134
 GameObject:
   m_ObjectHideFlags: 0
@@ -3392,6 +3405,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5daf89d54f1fcbe4a9cc0d2ddd5769f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mobManager: {fileID: 594352204}
+  _score: {fileID: 594352201}
   _peplePrefab:
   - {fileID: 1881428418422116, guid: 49d9a66905a3edb47bb628c4a425efb0, type: 2}
   - {fileID: 1133852973740148, guid: 0c6d831b1a5f5d748a2f0e17a4dfcd2d, type: 2}
