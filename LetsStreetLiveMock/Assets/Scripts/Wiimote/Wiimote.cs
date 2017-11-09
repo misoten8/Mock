@@ -340,11 +340,10 @@ public class Wiimote
     /// If there is no Wii Motion Plus connected, undefined behavior may occur on the Wii Remote.
     public bool ActivateWiiMotionPlus()
     {
-        //if (!wmp_attached)
+            //if (!wmp_attached)
             //Debug.LogWarning("There is a request to activate the Wii Motion Plus even though it has not been confirmed to exist!  Trying anyway.");
-
-        // Initialize the Wii Motion Plus by writing 0x55 to register 0xA600F0
-        int res = SendRegisterWriteRequest(RegisterType.CONTROL, 0xA600F0, new byte[] { 0x55 });
+            // Initialize the Wii Motion Plus by writing 0x55 to register 0xA600F0
+            int res = SendRegisterWriteRequest(RegisterType.CONTROL, 0xA600F0, new byte[] { 0x55 });
         if (res < 0) return false;
 
         // Activate the Wii Motion Plus as the active extension by writing 0x04 to register 0xA600FE
@@ -360,6 +359,7 @@ public class Wiimote
         if (_Extension == null || _Extension.GetType() != typeof(MotionPlusData))
             _Extension = new MotionPlusData(this);
         ExpectingWiiMotionPlusSwitch = true;
+            
 
         return true;
     }
@@ -898,11 +898,17 @@ public class Wiimote
         return intBytes;
     }
 
-	public void InitWiiMotionPlus()
-	{
-		SendDataReportMode(InputDataType.REPORT_BUTTONS_ACCEL_EXT16);
-		RequestIdentifyWiiMotionPlus();
-		ActivateWiiMotionPlus();
-	}
+       public void InitWiiMotionPlus()
+       {
+            SendDataReportMode(InputDataType.REPORT_BUTTONS_ACCEL_EXT16);
+            RequestIdentifyWiiMotionPlus();
+            ActivateWiiMotionPlus();
+       }
+
+       public void Rumble(bool rumble)
+       {
+           RumbleOn = rumble;
+           SendStatusInfoRequest();
+       }
 }
 }

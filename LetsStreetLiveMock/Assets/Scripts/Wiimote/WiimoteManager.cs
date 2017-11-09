@@ -13,6 +13,7 @@ public class WiimoteManager
     private const ushort product_id_wiimote = 0x0306;
     private const ushort product_id_wiimoteplus = 0x0330;
 
+
     /// A list of all currently connected Wii Remotes.
     public static List<Wiimote> Wiimotes { get { return _Wiimotes; } }
     private static List<Wiimote> _Wiimotes = new List<Wiimote>();
@@ -29,10 +30,11 @@ public class WiimoteManager
     public static int MaxWriteFrequency = 20; // In ms
     private static Queue<WriteQueueData> WriteQueue;
 
-    // ------------- RAW HIDAPI INTERFACE ------------- //
+        // ------------- RAW HIDAPI INTERFACE ------------- //
 
     /// \brief Attempts to find connected Wii Remotes, Wii Remote Pluses or Wii U Pro Controllers
     /// \return If any new remotes were found.
+    ///
     public static bool FindWiimotes()
     {
         bool ret = _FindWiimotes(WiimoteType.WIIMOTE);
@@ -117,10 +119,19 @@ public class WiimoteManager
     /// \param remote The remote to cleanup
     public static void Cleanup(Wiimote remote)
     {
-        if (remote.hidapi_handle != IntPtr.Zero)
-            HIDapi.hid_close(remote.hidapi_handle);
+            //if (remote.hidapi_handle != IntPtr.Zero)
+            //    HIDapi.hid_close(remote.hidapi_handle);
 
-        Wiimotes.Remove(remote);
+            //Wiimotes.Remove(remote);
+
+            if (remote != null)
+            {
+                if (remote.hidapi_handle != IntPtr.Zero)
+                {
+                    HIDapi.hid_close(remote.hidapi_handle);
+                }
+                Wiimotes.Remove(remote);
+            }
     }
 
     /// \return If any Wii Remotes are connected and found by FindWiimote
@@ -213,10 +224,9 @@ public class WiimoteManager
 	public static bool GetSwing(int num)
 	{
 		if (!HasWiimote(num)) return false;
-			if (!Wiimotes[num].wmp_attached) return false;
+			//if (!Wiimotes[num].wmp_attached) return false;
 			Wiimotes[num].ReadWiimoteData();
 		if (Wiimotes[num].MotionPlus.GetSwing(num)) return true;
-
 		return false;
 	}
 
@@ -225,8 +235,8 @@ public class WiimoteManager
 		if (!HasWiimote(wmNum)) return false;
 
 		bool down = false;
-		Wiimotes[wmNum].ReadWiimoteData();
-		switch (buttonNum)
+            Wiimotes[wmNum].ReadWiimoteData();
+            switch (buttonNum)
 		{
 				case ButtonData.WMBUTTON_A:
 					down = Wiimotes[wmNum].Button.a ? true : false;
@@ -273,5 +283,5 @@ public class WiimoteManager
 			}
 		return down;
 	}
-}
+    }
 } // namespace WiimoteApi

@@ -1142,6 +1142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _battle: {fileID: 594352199}
   _limitTime: 300
+  _currentTime: 0
 --- !u!114 &594352204
 MonoBehaviour:
   m_ObjectHideFlags: 0
