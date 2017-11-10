@@ -81,12 +81,13 @@ public class Player : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        if (WiimoteManager.Wiimotes[0] != null)
+		// 一括で実行させる
+        if (WiimoteManager.Wiimotes.Count > 0)
         {
             _wm = WiimoteManager.Wiimotes[0];
             WiimoteManager.Cleanup(_wm);
             _wm = null;
-            WiimoteManager.Wiimotes[0] = null;
+            WiimoteManager.Wiimotes.Clear();
         }
     }
 }
