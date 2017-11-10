@@ -88,11 +88,11 @@ public class Dance : MonoBehaviour
 		_giveFanPoint = 0;
 
 		_wmNum = (int)_player.Type - 1;
-	}
+    }
 
 	void Update()
 	{
-		if (IsPlaying)
+        if (IsPlaying)
 		{
 			if (_isTransing)
 				return;

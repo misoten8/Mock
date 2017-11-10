@@ -45,13 +45,12 @@ public class Player : MonoBehaviour
 		_wmNum = (int)_type - 1;
 		if (WiimoteManager.HasWiimote(_wmNum))
 		{
-			_wm = WiimoteManager.Wiimotes[_wmNum];
-			_wm.InitWiiMotionPlus();
-			_wm.Speaker.Init();
+            _wm = WiimoteManager.Wiimotes[_wmNum];
+            _wm.InitWiiMotionPlus();
 			int i = _wmNum + 1;
 			_wm.SendPlayerLED(i == 1, i == 2, i == 3, i == 4);
 		}
-	}
+    }
 
 	void Update()
 	{
@@ -79,4 +78,15 @@ public class Player : MonoBehaviour
 			}
 		}
 	}
+
+    void OnApplicationQuit()
+    {
+        if (WiimoteManager.Wiimotes[0] != null)
+        {
+            _wm = WiimoteManager.Wiimotes[0];
+            WiimoteManager.Cleanup(_wm);
+            _wm = null;
+            WiimoteManager.Wiimotes[0] = null;
+        }
+    }
 }
