@@ -16,23 +16,46 @@ public class MobController : MonoBehaviour
 	[SerializeField]
 	private WanderMove _wanderMove;
 
-	private IMove _currentMove;
+	[SerializeField]
+	private Rigidbody _rigidbody;
+
+	/// <summary>
+	/// 現在の移動処理
+	/// </summary>
+	//private IMove _currentMove;
 
 	void Start()
 	{
+		// モブ再生イベントで実行する処理を追加
+		_mob.onPlayMob += () =>
+		{
+			_wanderMove.OnStart();
+			_followMove.enabled = false;
+			//_currentMove = _wanderMove;
+		};
+
+		// モブ停止イベントで実行する処理を追加
+		_mob.onStopMob += () =>
+		{
+			_followMove.enabled = false;
+			_wanderMove.enabled = false;
+			_rigidbody.velocity = new Vector3();
+		};
+
+		// 一押しプレイヤー変化イベントで実行する処理を追加
 		_mob.onChangeFun += () =>
 		{
 			if (_mob.FunType != Define.PlayerType.None)
 			{
 				_followMove.OnStart(_mob.funPlayer.transform);
 				_wanderMove.enabled = false;
-				_currentMove = _followMove;
+				//_currentMove = _followMove;
 			}
 			else
 			{
 				_wanderMove.OnStart();
 				_followMove.enabled = false;
-				_currentMove = _wanderMove;
+				//_currentMove = _wanderMove;
 			}
 		};
 

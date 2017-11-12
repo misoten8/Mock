@@ -245,6 +245,7 @@ MonoBehaviour:
   _mob: {fileID: 114669695057850480}
   _followMove: {fileID: 114739631158529240}
   _wanderMove: {fileID: 114493943385594224}
+  _rigidbody: {fileID: 54658498035759368}
 --- !u!114 &114493943385594224
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -258,6 +259,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rb: {fileID: 54658498035759368}
   _velocity: 1
+  _maxVelocity: 2
 --- !u!114 &114607845416694484
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -283,7 +285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fanLevel: 0
   _fanPoint: {fileID: 114922318718485558}
-  _mobController: {fileID: 0}
+  _mobController: {fileID: 114452835143322282}
   _meshRenderer: {fileID: 23529373621009956}
 --- !u!114 &114739631158529240
 MonoBehaviour:
@@ -298,6 +300,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rb: {fileID: 54658498035759368}
   _velocity: 1
+  _maxVelocity: 5
   _stopDistance: 3
   _slowDistance: 9
 --- !u!114 &114922318718485558

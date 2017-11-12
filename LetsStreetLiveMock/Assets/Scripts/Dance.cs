@@ -2,6 +2,9 @@
 using UnityEngine;
 using UniRx;
 using WiimoteApi;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections;
 
 /// <summary>
 /// ダンス クラス
@@ -16,7 +19,7 @@ public class Dance : MonoBehaviour
 
 	public bool IsPlaying
 	{
-		get { return _danceCollider.enabled; }
+		get { return _isPlaing; }
 	}
 
 	public int GiveFanPoint
@@ -34,11 +37,6 @@ public class Dance : MonoBehaviour
 		get { return _isRequestShake; }
 	}
 
-	/// <summary>
-	/// ダンス終了時に呼ばれる
-	/// </summary>
-	public Action OnEndDance;
-
 	public Player Player
 	{
 		get { return _player; }
@@ -46,6 +44,12 @@ public class Dance : MonoBehaviour
 
 	[SerializeField]
 	private Player _player;
+
+	/// <summary>
+	/// ダンス終了時実行イベント
+	/// bool型引数 -> このダンスが中断されたかどうか
+	/// </summary>
+	public Action<bool> OnEndDance;
 
 	[SerializeField]
 	private Camera _camera;
@@ -59,6 +63,9 @@ public class Dance : MonoBehaviour
 	[SerializeField]
 	private DanceUI _danceUI;
 
+	[SerializeField]
+	private MeshRenderer _danceFloor;
+
 	/// <summary>
 	/// 人々に渡すファンポイント...ダンスの出来によって変動する
 	/// </summary>
@@ -68,18 +75,34 @@ public class Dance : MonoBehaviour
 
 	private bool _isRequestShake = false;
 
-	private GameObject _particle;
-
 	/// <summary>
 	/// 処理中かどうか
 	/// </summary>
 	private bool _isTransing = false;
 
-	private SingleAssignmentDisposable _disposable = null;
+	/// <summary>
+	/// ダンス中かどうか
+	/// </summary>
+	private bool _isPlaing = false;
 
 	// wiiリモコン
 	private Wiimote _wm;
 	private int _wmNum;
+
+	/// <summary>
+	/// ダンス時間
+	/// </summary>
+	private const float _DANCE_TIME = 30.0f;
+
+	/// <summary>
+	/// 一回のダンスで発生するリクエスト回数
+	/// </summary>
+	private const int _REQUEST_COUNT = 3;
+
+	/// <summary>
+	/// 各リクエスト事の持続時間
+	/// </summary>
+	private float[] _requestTime = new float[_REQUEST_COUNT];
 
 	private void Start()
 	{
@@ -88,7 +111,7 @@ public class Dance : MonoBehaviour
 		_giveFanPoint = 0;
 
 		_wmNum = (int)_player.Type - 1;
-    }
+	}
 
 	void Update()
 	{
@@ -96,6 +119,7 @@ public class Dance : MonoBehaviour
 		{
 			if (_isTransing)
 				return;
+
 			if (Input.GetKeyDown("return") || WiimoteManager.GetSwing( _wmNum))
 			{
 				ChangeFanPoint(_isRequestShake ? 1 : -1);
@@ -110,41 +134,25 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public void Begin()
 	{
+		// ダンスの振付時間を乱数で決定する
+		_requestTime = _requestTime.Select(e => UnityEngine.Random.Range(_DANCE_TIME, _DANCE_TIME * 3)).ToArray();
+
+		// 合計
+		float sum = _requestTime.Sum();
+
+		// 正規化
+		_requestTime = _requestTime.Select(e => _DANCE_TIME * (e / sum)).ToArray();
+
 		_isTransing = false;
 		_isSuccess = false;
 		_giveFanPoint = 0;
 		_danceCollider.enabled = true;
 		SetCamera(true);
 		_danceUI.Active();
-		// 足止め
-		_disposable = new SingleAssignmentDisposable();
-		// 最初は1秒待機する
-		_disposable.Disposable = Observable
-			.Timer(TimeSpan.FromSeconds(1))
-			.Subscribe(_ =>
-			{
-				_danceCollider.enabled = true;
-				_particle = ParticleManager.Play("DanceNow", new Vector3(), transform);
-				_isRequestShake = true;
-				_danceUI.SetRequestShake(_isRequestShake);
-				Observable
-					.Timer(TimeSpan.FromSeconds(10))
-					.Subscribe(__ =>
-					{
-						_isRequestShake = false;
-						_danceUI.SetRequestShake(_isRequestShake);
-						Observable
-							.Timer(TimeSpan.FromSeconds(10))
-							.Subscribe(___ =>
-							{
-								_isRequestShake = true;
-								_danceUI.SetRequestShake(_isRequestShake);
-								Observable
-									.Timer(TimeSpan.FromSeconds(10))
-									.Subscribe(e => End());
-							});
-					});
-			});
+		_danceFloor.enabled = true;
+		_isPlaing = true;
+
+		StartCoroutine("StepDo");
 	}
 
 	/// <summary>
@@ -154,19 +162,20 @@ public class Dance : MonoBehaviour
 	{
 		if (_isTransing)
 			return;
-
-		OnEndDance.Invoke();
+		
+		OnEndDance?.Invoke(false);
 		_danceUI.SetResult(IsSuccess);
-		Destroy(_particle);
 		_isTransing = true;
+		_danceCollider.enabled = false;
 		Observable
 			.Timer(TimeSpan.FromSeconds(3))
 			.Subscribe(_ =>
 			{
+				_isPlaing = false;
 				_isTransing = false;
 				_danceUI.NotActive();
 				SetCamera(false);
-				_danceCollider.enabled = false;
+				_danceFloor.enabled = false;
 				// スコアを設定する
 				_giveFanPoint = 0;
 			});
@@ -177,17 +186,19 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public void Cancel()
 	{
-		if (IsPlaying)
-		{
-			_isTransing = false;
-			_danceUI.NotActive();
-			SetCamera(false);
-			_danceCollider.enabled = false;
-			Destroy(_particle);
-			// スコアを設定する
-			_giveFanPoint = 0;
-			_disposable.Dispose();
-		}
+		if (_isTransing)
+			return;
+
+		OnEndDance?.Invoke(true);
+		_isPlaing = false;
+		_isTransing = false;
+		_danceUI.NotActive();
+		SetCamera(false);
+		_danceCollider.enabled = false;
+		_danceFloor.enabled = false;
+		// スコアを設定する
+		_giveFanPoint = 0;
+		StopCoroutine("StepDo");
 	}
 
 	/// <summary>
@@ -213,5 +224,29 @@ public class Dance : MonoBehaviour
 			_isSuccess = true;
 			_danceUI.SetPointColor(new Color(0.0f, 0.0f, 1.0f));
 		}
+
+	}
+
+	/// <summary>
+	/// ダンスのステップ事に処理を実行する
+	/// </summary>
+	private IEnumerator StepDo()
+	{
+		yield return new WaitForSeconds(1.0f);
+		_isRequestShake = true;
+		_danceUI.SetRequestShake(_isRequestShake);
+
+		yield return new WaitForSeconds(_requestTime[0]);
+		_isRequestShake = false;
+		_danceUI.SetRequestShake(_isRequestShake);
+
+		yield return new WaitForSeconds(_requestTime[1]);
+		_isRequestShake = true;
+		_danceUI.SetRequestShake(_isRequestShake);
+
+		yield return new WaitForSeconds(_requestTime[2]);
+		End();
+
+		yield return null;
 	}
 }

@@ -9,7 +9,7 @@ public class FollowMove : MonoBehaviour, IMove
 {
 	/// <summary>
 	/// 遷移条件判定イベント
-	/// Updateのタイミングで呼ばれます
+	/// FixedUpdateのタイミングで呼ばれます
 	/// </summary>
 	public Action OnTransCheck
 	{
@@ -26,6 +26,12 @@ public class FollowMove : MonoBehaviour, IMove
 	/// </summary>
 	[SerializeField]
 	private float _velocity;
+
+	/// <summary>
+	/// 最大速度
+	/// </summary>
+	[SerializeField]
+	private float _maxVelocity;
 
 	/// <summary>
 	/// 移動を中止する距離
@@ -55,7 +61,7 @@ public class FollowMove : MonoBehaviour, IMove
 		_target = null;
 	}
 
-	void Update()
+	void FixedUpdate()
 	{
 		if (_target == null)
 		{
@@ -72,6 +78,9 @@ public class FollowMove : MonoBehaviour, IMove
 
 		// 移動処理
 		_rb.AddForce(moveDirection * _velocity * Mathf.Min((distance - _stopDistance) / _slowDistance, 1.0f));
+
+		// 速度制限
+		_rb.velocity = Vector3.ClampMagnitude(_rb.velocity, _maxVelocity);
 
 		// 遷移チェック
 		_onTransCheck?.Invoke();

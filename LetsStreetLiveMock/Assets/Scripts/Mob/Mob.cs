@@ -10,27 +10,9 @@ using System;
 public class Mob : MonoBehaviour
 {
 	/// <summary>
-	/// モブの推しが変化した時に呼ぶイベント
-	/// </summary>
-	public event Action onChangeFun;
-
-	[SerializeField]
-	private Define.FanLevel _fanLevel;
-
-	[SerializeField]
-	private FanPoint _fanPoint;
-
-	[SerializeField]
-	private MobController _mobController;
-
-	/// <summary>
-	/// マテリアルを設定する対象メッシュ
-	/// </summary>
-	[SerializeField]
-	private MeshRenderer _meshRenderer;
-
-	/// <summary>
 	/// ファンポイント
+	/// 配列の合計で人のファンポイント最大値になるようにする
+	/// ファンポイント最大値はファンタイプに応じて変わる
 	/// </summary>
 	public float[] FanPointArray
 	{
@@ -45,12 +27,6 @@ public class Mob : MonoBehaviour
 		get { return _fanPointArray.Select(x => x / Define.FanPointArray[(int)_fanLevel]).ToArray(); }
 	}
 
-	/// <summary>
-	/// 影響力
-	/// 配列の合計で人のファンポイント最大値になるようにする
-	/// ファンポイント最大値はファンタイプに応じて変わる
-	/// 0...無所属 1~...プレイヤー
-	/// </summary>
 	private float[] _fanPointArray = new float[Define.METER_NUM_MAX] { 0, 0, 0, 0, 0 };
 
 	/// <summary>
@@ -73,8 +49,52 @@ public class Mob : MonoBehaviour
 
 	private Player _funPlayer = null;
 
+	/// <summary>
+	/// モブが再生状態になった時に呼ぶイベント
+	/// </summary>
+	public event Action onPlayMob;
+
+	/// <summary>
+	/// モブが停止状態になった時に呼ぶイベント
+	/// </summary>
+	public event Action onStopMob;
+
+	/// <summary>
+	/// モブの推しが変化した時に呼ぶイベント
+	/// </summary>
+	public event Action onChangeFun;
+
+	[SerializeField]
+	private Define.FanLevel _fanLevel;
+
+	[SerializeField]
+	private FanPoint _fanPoint;
+
+	[SerializeField]
+	private MobController _mobController;
+
+	/// <summary>
+	/// マテリアルを設定する対象メッシュ
+	/// </summary>
+	[SerializeField]
+	private MeshRenderer _meshRenderer;
+
+
 	private MobManager _mobManager;
 
+	/// <summary>
+	/// ダンス視聴中エフェクト
+	/// </summary>
+	private GameObject _danceNowEffect;
+
+	/// <summary>
+	/// 既にダンスを視聴中かどうか
+	/// </summary>
+	private bool _isViewingInDance;
+
+	/// <summary>
+	/// モブ生成時に呼ばれる
+	/// </summary>
 	public void OnAwake(MobGenerator.MobCaches mobCaches)
 	{
 		_mobManager = mobCaches.mobManager;
@@ -82,7 +102,6 @@ public class Mob : MonoBehaviour
 
 	private void Start()
 	{
-		//_score = GameObject.Find("BattleManager").GetComponent<Score>();
 		// 無所属に全てのファンポイントを設定
 		_fanPointArray[0] = Define.FanPointArray[(int)_fanLevel];
 
@@ -91,19 +110,44 @@ public class Mob : MonoBehaviour
 
 		// アウトラインの更新
 		_meshRenderer.materials[1].color = GetColor(_funType);
+
+		// モブ再生イベント実行
+		onPlayMob?.Invoke();
 	}
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.tag != "DanceRange") return;
+		if (other.tag != "DanceRange")
+			return;
+
+		// 既に他のプレイヤーのダンスを視聴している場合無視する
+		if (_isViewingInDance)
+			return;
 
 		Dance playerDance = other.gameObject.GetComponent<Dance>();
 
+		// モブ停止イベント実行
+		onStopMob?.Invoke();
 
+		// ダンス視聴中エフェクト再生
+		_danceNowEffect = ParticleManager.Play("DanceNow", new Vector3(), transform);
 
-		// メソッドをスタック
-		playerDance.OnEndDance += () =>
+		_isViewingInDance = true;
+
+		// ダンス終了イベントにメソッドを登録する
+		playerDance.OnEndDance += (isCancel) =>
 		{
+			// モブ再生イベント実行
+			onPlayMob?.Invoke();
+
+			Destroy(_danceNowEffect);
+
+			_isViewingInDance = false;
+
+			// ダンスが中断された場合は処理を中断する
+			if (isCancel)
+				return;
+
 			// 好感度を設定
 			SetFanPoint(playerDance.PlayerType, playerDance.GiveFanPoint);
 
@@ -126,10 +170,10 @@ public class Mob : MonoBehaviour
 				// アウトラインの更新
 				_meshRenderer.materials[1].color = GetColor(_funType);
 
-				// イベント処理の実行
+				// 一押しプレイヤー変化イベント実行
 				onChangeFun?.Invoke();
 			}
-		};	
+		};
 	}
 
 	// ポイントの計算...dancePoint(ダンスのスコア...効果範囲内の人全員に与える)

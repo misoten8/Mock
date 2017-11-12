@@ -47,6 +47,12 @@ public class WanderMove : MonoBehaviour, IMove
 	private float _velocity;
 
 	/// <summary>
+	/// 最大速度
+	/// </summary>
+	[SerializeField]
+	private float _maxVelocity;
+
+	/// <summary>
 	/// 移動方向
 	/// </summary>
 	private Vector3 _moveDirection;
@@ -57,15 +63,27 @@ public class WanderMove : MonoBehaviour, IMove
 	private bool _isFirstFrame = true;
 
 	/// <summary>
+	/// 中断時にuniRxのパイプラインを解放する
+	/// </summary>
+	private IDisposable _disposable;
+
+	/// <summary>
 	/// 初期化処理
 	/// </summary>
 	public void OnStart()
 	{
 		enabled = true;
 		_isFirstFrame = true;
+		_state = State.Move;
 	}
 
-	void Update()
+	private void OnDisable()
+	{
+		// 破棄
+		_disposable?.Dispose();
+	}
+
+	void FixedUpdate()
 	{
 		switch (_state)
 		{
@@ -77,7 +95,7 @@ public class WanderMove : MonoBehaviour, IMove
 					float rotationY = UnityEngine.Random.Range(-10.0f, 10.0f);
 					_moveDirection = new Vector3(Mathf.Sin(rotationY) * 1, 0, Mathf.Cos(rotationY) * 1);
 
-					Observable
+					_disposable = Observable
 						.Timer(TimeSpan.FromSeconds(UnityEngine.Random.Range(1, 3)))
 						.Subscribe(e => 
 						{
@@ -91,6 +109,9 @@ public class WanderMove : MonoBehaviour, IMove
 				// 移動処理
 				_rb.AddForce(_moveDirection * _velocity);
 
+				// 速度制限
+				_rb.velocity = Vector3.ClampMagnitude(_rb.velocity, _maxVelocity);
+
 				// 遷移チェック
 				_onCheck?.Invoke();
 				break;
@@ -99,7 +120,7 @@ public class WanderMove : MonoBehaviour, IMove
 				{
 					_isFirstFrame = false;
 
-					Observable
+					_disposable = Observable
 						.Timer(TimeSpan.FromSeconds(UnityEngine.Random.Range(1, 3)))
 						.Subscribe(e =>
 						{
