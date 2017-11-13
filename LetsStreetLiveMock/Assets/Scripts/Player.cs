@@ -16,6 +16,14 @@ public class Player : MonoBehaviour
 		get { return _type; }
 	}
 
+	public Color PlayerColor
+	{
+		get { return _playerColor; }
+	}
+
+	[SerializeField]
+	private Color _playerColor;
+
 	[SerializeField]
 	private Define.PlayerType _type;
 
@@ -34,6 +42,9 @@ public class Player : MonoBehaviour
 	[SerializeField]
 	private Dance _dance;
 
+	[SerializeField]
+	private PlayerManager _playerManager;
+
 	// wiiリモコン
 	private Wiimote _wm;
 	private int _wmNum;
@@ -50,7 +61,12 @@ public class Player : MonoBehaviour
 			int i = _wmNum + 1;
 			_wm.SendPlayerLED(i == 1, i == 2, i == 3, i == 4);
 		}
-    }
+
+		_playerManager.onDanceStart += () =>
+		{
+			_dance.Begin();
+		};
+	}
 
 	void Update()
 	{
@@ -64,18 +80,6 @@ public class Player : MonoBehaviour
 				transform.Rotate(Vector3.up, _rotatePower);
 			if (Input.GetKey("down") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_LEFT))
 				_rb.AddForce(-transform.forward * _power);
-
-			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_TWO))
-			{
-				_dance.Begin();
-			}
-		}
-		else
-		{
-			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_ONE))
-			{
-				_dance.Cancel();
-			}
 		}
 	}
 

@@ -17,6 +17,12 @@ public class MobGenerator : MonoBehaviour
 	private MobManager _mobManager;
 
 	/// <summary>
+	/// プレイヤー管理クラス
+	/// </summary>
+	[SerializeField]
+	private PlayerManager _playerManager;
+
+	/// <summary>
 	/// スコア
 	/// </summary>
 	[SerializeField]
@@ -52,10 +58,12 @@ public class MobGenerator : MonoBehaviour
 	public struct MobCaches
 	{
 		public MobManager mobManager;
+		public PlayerManager playerManager;
 
-		public MobCaches(MobManager MobManager)
+		public MobCaches(MobManager MobManager, PlayerManager PlayerManager)
 		{
 			mobManager = MobManager;
+			playerManager = PlayerManager;
 		}
 	}
 
@@ -68,7 +76,7 @@ public class MobGenerator : MonoBehaviour
 
 	void Start()
 	{
-		_mobCaches = new MobCaches(_mobManager);
+		_mobCaches = new MobCaches(_mobManager, _playerManager);
 		CreateStart();
 	}
 

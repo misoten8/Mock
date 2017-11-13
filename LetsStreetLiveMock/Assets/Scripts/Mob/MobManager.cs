@@ -52,11 +52,11 @@ public class MobManager : MonoBehaviour
 		if (!_isScoreChange)
 			return;
 
-		float[][] playerScore = _mobs.Select(e => e.FanPointArray).ToArray();
-		_score.SetScore(Define.PlayerType.First, (int)playerScore[(int)Define.PlayerType.First].Sum());
-		_score.SetScore(Define.PlayerType.Second, (int)playerScore[(int)Define.PlayerType.Second].Sum());
-		_score.SetScore(Define.PlayerType.Third, (int)playerScore[(int)Define.PlayerType.Third].Sum());
-		_score.SetScore(Define.PlayerType.Force, (int)playerScore[(int)Define.PlayerType.Force].Sum());
+		//float[][] playerScore = _mobs.Select(e => e.FanPointArray).ToArray();
+		_score.SetScore(Define.PlayerType.First, _mobs.Where(e => e.FunType == Define.PlayerType.First).Count());
+		_score.SetScore(Define.PlayerType.Second, _mobs.Where(e => e.FunType == Define.PlayerType.Second).Count());
+		_score.SetScore(Define.PlayerType.Third, _mobs.Where(e => e.FunType == Define.PlayerType.Third).Count());
+		_score.SetScore(Define.PlayerType.Force, _mobs.Where(e => e.FunType == Define.PlayerType.Force).Count());
 		_isScoreChange = false;
 	}
 }

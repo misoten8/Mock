@@ -67,8 +67,8 @@ public class Mob : MonoBehaviour
 	[SerializeField]
 	private Define.FanLevel _fanLevel;
 
-	[SerializeField]
-	private FanPoint _fanPoint;
+	//[SerializeField]
+	//private FanPoint _fanPoint;
 
 	[SerializeField]
 	private MobController _mobController;
@@ -79,8 +79,15 @@ public class Mob : MonoBehaviour
 	[SerializeField]
 	private MeshRenderer _meshRenderer;
 
-
+	/// <summary>
+	/// モブ管理クラス
+	/// </summary>
 	private MobManager _mobManager;
+
+	/// <summary>
+	/// プレイヤー管理クラス
+	/// </summary>
+	private PlayerManager _playerManager;
 
 	/// <summary>
 	/// ダンス視聴中エフェクト
@@ -98,6 +105,7 @@ public class Mob : MonoBehaviour
 	public void OnAwake(MobGenerator.MobCaches mobCaches)
 	{
 		_mobManager = mobCaches.mobManager;
+		_playerManager = mobCaches.playerManager;
 	}
 
 	private void Start()
@@ -109,7 +117,7 @@ public class Mob : MonoBehaviour
 		_funType = (Define.PlayerType)_fanPointArray.FindIndexMax();
 
 		// アウトラインの更新
-		_meshRenderer.materials[1].color = GetColor(_funType);
+		_meshRenderer.materials[1].color = new Color(0.2f, 0.2f, 0.2f);
 
 		// モブ再生イベント実行
 		onPlayMob?.Invoke();
@@ -125,6 +133,8 @@ public class Mob : MonoBehaviour
 			return;
 
 		Dance playerDance = other.gameObject.GetComponent<Dance>();
+
+		// プレイヤーが客引き状態の場合、追従判定を行う
 
 		// モブ停止イベント実行
 		onStopMob?.Invoke();
@@ -144,21 +154,11 @@ public class Mob : MonoBehaviour
 
 			_isViewingInDance = false;
 
-			// ダンスが中断された場合は処理を中断する
-			if (isCancel)
-				return;
-
-			// 好感度を設定
-			SetFanPoint(playerDance.PlayerType, playerDance.GiveFanPoint);
-
 			// モブキャラ管理クラスにスコア変更を通知
 			_mobManager.OnScoreChange();
 
-			// 好感度ビルボードのマテリアルを更新
-			_fanPoint.UpdateMaterial();
-
 			// ファンタイプが変更したかチェックする
-			Define.PlayerType newFunType = (Define.PlayerType)_fanPointArray.FindIndexMax();
+			Define.PlayerType newFunType = playerDance.Player.Type;
 			if (_funType != newFunType)
 			{
 				// ファンタイプの更新
@@ -168,31 +168,11 @@ public class Mob : MonoBehaviour
 				_funPlayer = playerDance.Player;
 
 				// アウトラインの更新
-				_meshRenderer.materials[1].color = GetColor(_funType);
+				_meshRenderer.materials[1].color = playerDance.Player.PlayerColor;
 
 				// 一押しプレイヤー変化イベント実行
 				onChangeFun?.Invoke();
 			}
 		};
-	}
-
-	// ポイントの計算...dancePoint(ダンスのスコア...効果範囲内の人全員に与える)
-	// 人の種類に応じて好感度上昇量は異なる
-	private void SetFanPoint(Define.PlayerType type, int dancePoint)
-	{
-		// ポイントを加算
-		_fanPointArray[(int)type] += dancePoint;
-
-		// ファンポイント最大値を取得
-		float fanPointMax = Define.FanPointArray[(int)_fanLevel];
-		float fanPointSum = _fanPointArray.Sum();
-
-		// 値をファンポイント最大値に合わせてスケーリングする
-		_fanPointArray = _fanPointArray.Select(x => fanPointMax * (x / fanPointSum)).ToArray();
-	}
-
-	private Color GetColor(Define.PlayerType type)
-	{
-		return _fanPoint.MeterColor[(int)type];
 	}
 }

@@ -89,20 +89,12 @@ public class Dance : MonoBehaviour
 	private Wiimote _wm;
 	private int _wmNum;
 
-	/// <summary>
-	/// ダンス時間
-	/// </summary>
-	private const float _DANCE_TIME = 30.0f;
-
-	/// <summary>
-	/// 一回のダンスで発生するリクエスト回数
-	/// </summary>
-	private const int _REQUEST_COUNT = 3;
+	
 
 	/// <summary>
 	/// 各リクエスト事の持続時間
 	/// </summary>
-	private float[] _requestTime = new float[_REQUEST_COUNT];
+	private float[] _requestTime = new float[PlayerManager.REQUEST_COUNT];
 
 	private void Start()
 	{
@@ -135,13 +127,13 @@ public class Dance : MonoBehaviour
 	public void Begin()
 	{
 		// ダンスの振付時間を乱数で決定する
-		_requestTime = _requestTime.Select(e => UnityEngine.Random.Range(_DANCE_TIME, _DANCE_TIME * 3)).ToArray();
+		_requestTime = _requestTime.Select(e => UnityEngine.Random.Range(PlayerManager.DANCE_TIME, PlayerManager.DANCE_TIME * 3)).ToArray();
 
 		// 合計
 		float sum = _requestTime.Sum();
 
 		// 正規化
-		_requestTime = _requestTime.Select(e => _DANCE_TIME * (e / sum)).ToArray();
+		_requestTime = _requestTime.Select(e => PlayerManager.DANCE_TIME * (e / sum)).ToArray();
 
 		_isTransing = false;
 		_isSuccess = false;
@@ -179,26 +171,6 @@ public class Dance : MonoBehaviour
 				// スコアを設定する
 				_giveFanPoint = 0;
 			});
-	}
-
-	/// <summary>
-	/// ダンスを中断する
-	/// </summary>
-	public void Cancel()
-	{
-		if (_isTransing)
-			return;
-
-		OnEndDance?.Invoke(true);
-		_isPlaing = false;
-		_isTransing = false;
-		_danceUI.NotActive();
-		SetCamera(false);
-		_danceCollider.enabled = false;
-		_danceFloor.enabled = false;
-		// スコアを設定する
-		_giveFanPoint = 0;
-		StopCoroutine("StepDo");
 	}
 
 	/// <summary>

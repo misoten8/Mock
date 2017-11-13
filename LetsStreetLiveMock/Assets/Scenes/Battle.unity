@@ -311,12 +311,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71545632ca470d24f9b96c856d7c929a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerColor: {r: 1, g: 0, b: 0, a: 1}
   _type: 1
   _rb: {fileID: 60955479}
   _power: 400
   _rotatePower: 6
   _animator: {fileID: 60955481}
   _dance: {fileID: 871764280}
+  _playerManager: {fileID: 594352205}
 --- !u!95 &60955481 stripped
 Animator:
   m_PrefabParentObject: {fileID: 9500000, guid: fe5e0906a210d7c4d9836be0563cdcce,
@@ -608,12 +610,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71545632ca470d24f9b96c856d7c929a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerColor: {r: 0, g: 1, b: 0, a: 1}
   _type: 3
   _rb: {fileID: 221819146}
   _power: 400
   _rotatePower: 6
   _animator: {fileID: 221819148}
   _dance: {fileID: 134893255}
+  _playerManager: {fileID: 594352205}
 --- !u!95 &221819148 stripped
 Animator:
   m_PrefabParentObject: {fileID: 95711890678322932, guid: 5b5719f82e355574e8d20573e708aa23,
@@ -1216,6 +1220,7 @@ GameObject:
   - component: {fileID: 594352201}
   - component: {fileID: 594352203}
   - component: {fileID: 594352204}
+  - component: {fileID: 594352205}
   m_Layer: 0
   m_Name: BattleManager
   m_TagString: Untagged
@@ -1297,6 +1302,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _score: {fileID: 594352201}
+--- !u!114 &594352205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 594352198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10e3f97f1e9691642b579f2d0ae0f198, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _players:
+  - {fileID: 60955480}
+  - {fileID: 1334522312}
+  - {fileID: 221819147}
+  - {fileID: 1612624961}
 --- !u!1 &618399134
 GameObject:
   m_ObjectHideFlags: 0
@@ -2404,12 +2425,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71545632ca470d24f9b96c856d7c929a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerColor: {r: 0, g: 0, b: 1, a: 1}
   _type: 2
   _rb: {fileID: 1334522313}
   _power: 400
   _rotatePower: 6
   _animator: {fileID: 1334522314}
   _dance: {fileID: 618399137}
+  _playerManager: {fileID: 594352205}
 --- !u!54 &1334522313
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2818,12 +2841,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71545632ca470d24f9b96c856d7c929a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerColor: {r: 1, g: 1, b: 0, a: 1}
   _type: 4
   _rb: {fileID: 1612624963}
   _power: 400
   _rotatePower: 6
   _animator: {fileID: 1612624959}
   _dance: {fileID: 421753085}
+  _playerManager: {fileID: 594352205}
 --- !u!135 &1612624962
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -3318,7 +3343,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1779295175
 Transform:
   m_ObjectHideFlags: 0
@@ -4057,6 +4082,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mobManager: {fileID: 594352204}
+  _playerManager: {fileID: 594352205}
   _score: {fileID: 594352201}
   _peplePrefab:
   - {fileID: 1881428418422116, guid: 49d9a66905a3edb47bb628c4a425efb0, type: 2}
