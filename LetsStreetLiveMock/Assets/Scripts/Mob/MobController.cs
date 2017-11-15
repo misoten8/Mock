@@ -31,7 +31,6 @@ public class MobController : MonoBehaviour
 		{
 			_wanderMove.OnStart();
 			_followMove.enabled = false;
-			//_currentMove = _wanderMove;
 		};
 
 		// モブ停止イベントで実行する処理を追加
@@ -49,14 +48,19 @@ public class MobController : MonoBehaviour
 			{
 				_followMove.OnStart(_mob.funPlayer.transform);
 				_wanderMove.enabled = false;
-				//_currentMove = _followMove;
 			}
 			else
 			{
 				_wanderMove.OnStart();
 				_followMove.enabled = false;
-				//_currentMove = _wanderMove;
 			}
+		};
+
+		// 追従対象プレイヤー変更イベント
+		_mob.onChangeFllowPlayer += () =>
+		{
+			_followMove.OnStart(_mob.PlayerManager.GetPlayer(_mob.FllowTarget).transform);
+			_wanderMove.enabled = false;
 		};
 
 		_followMove.OnTransCheck = () =>

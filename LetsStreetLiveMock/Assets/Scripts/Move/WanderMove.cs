@@ -83,7 +83,7 @@ public class WanderMove : MonoBehaviour, IMove
 		_disposable?.Dispose();
 	}
 
-	void FixedUpdate()
+	void Update()
 	{
 		switch (_state)
 		{
@@ -91,7 +91,7 @@ public class WanderMove : MonoBehaviour, IMove
 				if (_isFirstFrame)
 				{
 					_isFirstFrame = false;
-					// 移動方向決める
+					// 移動方向を決める
 					float rotationY = UnityEngine.Random.Range(-10.0f, 10.0f);
 					_moveDirection = new Vector3(Mathf.Sin(rotationY) * 1, 0, Mathf.Cos(rotationY) * 1);
 
@@ -107,10 +107,7 @@ public class WanderMove : MonoBehaviour, IMove
 				transform.rotation = Quaternion.LookRotation(_moveDirection);
 
 				// 移動処理
-				_rb.AddForce(_moveDirection * _velocity);
-
-				// 速度制限
-				_rb.velocity = Vector3.ClampMagnitude(_rb.velocity, _maxVelocity);
+				transform.position += new Vector3(_moveDirection.x * _velocity, 0.0f, _moveDirection.z * _velocity);
 
 				// 遷移チェック
 				_onCheck?.Invoke();

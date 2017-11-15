@@ -17,6 +17,17 @@ namespace Misoten8Utility
 		public static int GetFanScore(Define.FanLevel fanLevel) => Define.FanScoreArray[(int)fanLevel];
 	}
 
+	public static class ArrayExtensions
+	{
+		public static bool IsNullOrEmpty<T>(this T[] target)
+		{
+			if (target == null)
+				return true;
+
+			return target.Count() == 0;
+		}
+	}
+
 	public static class EnumerableExtensions
 	{
 		public static Decimal[] SumDoubleArray(this IEnumerable<Decimal[][]> element, int arraySize)

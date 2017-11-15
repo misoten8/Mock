@@ -1,9 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using WiimoteApi;
-using WiimoteApi.Internal;
-using WiimoteApi.Util;
 
 /// <summary>
 /// Player クラス

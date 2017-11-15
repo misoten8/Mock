@@ -3,6 +3,7 @@ using UnityEngine;
 
 /// <summary>
 /// 追従移動 クラス
+/// Rigitbodyを使用せず、直接座標を設定します
 /// 製作者：実川
 /// </summary>
 public class FollowMove : MonoBehaviour, IMove
@@ -18,20 +19,11 @@ public class FollowMove : MonoBehaviour, IMove
 
 	private Action _onTransCheck;
 
-	[SerializeField]
-	private Rigidbody _rb;
-
 	/// <summary>
 	/// 移動する速度
 	/// </summary>
 	[SerializeField]
 	private float _velocity;
-
-	/// <summary>
-	/// 最大速度
-	/// </summary>
-	[SerializeField]
-	private float _maxVelocity;
 
 	/// <summary>
 	/// 移動を中止する距離
@@ -61,7 +53,7 @@ public class FollowMove : MonoBehaviour, IMove
 		_target = null;
 	}
 
-	void FixedUpdate()
+	void Update()
 	{
 		if (_target == null)
 		{
@@ -76,11 +68,11 @@ public class FollowMove : MonoBehaviour, IMove
 		// 回転処理
 		transform.rotation = Quaternion.LookRotation(moveDirection);
 
-		// 移動処理
-		_rb.AddForce(moveDirection * _velocity * Mathf.Min((distance - _stopDistance) / _slowDistance, 1.0f));
+		// 速度計算処理
+		float velocity = _velocity * Mathf.Min((distance - _stopDistance) / _slowDistance, 1.0f);
 
-		// 速度制限
-		_rb.velocity = Vector3.ClampMagnitude(_rb.velocity, _maxVelocity);
+		// 移動処理
+		transform.position += new Vector3(moveDirection.x * velocity, 0.0f, moveDirection.z * velocity);
 
 		// 遷移チェック
 		_onTransCheck?.Invoke();

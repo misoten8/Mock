@@ -98,7 +98,7 @@ public class Dance : MonoBehaviour
 
 	private void Start()
 	{
-		_danceCollider.enabled = false;
+		_danceCollider.enabled = true;
 		_danceUI.NotActive();
 		_giveFanPoint = 0;
 
@@ -138,7 +138,7 @@ public class Dance : MonoBehaviour
 		_isTransing = false;
 		_isSuccess = false;
 		_giveFanPoint = 0;
-		_danceCollider.enabled = true;
+		//_danceCollider.enabled = true;
 		SetCamera(true);
 		_danceUI.Active();
 		_danceFloor.enabled = true;
@@ -158,7 +158,7 @@ public class Dance : MonoBehaviour
 		OnEndDance?.Invoke(false);
 		_danceUI.SetResult(IsSuccess);
 		_isTransing = true;
-		_danceCollider.enabled = false;
+		//_danceCollider.enabled = false;
 		Observable
 			.Timer(TimeSpan.FromSeconds(3))
 			.Subscribe(_ =>
@@ -196,7 +196,6 @@ public class Dance : MonoBehaviour
 			_isSuccess = true;
 			_danceUI.SetPointColor(new Color(0.0f, 0.0f, 1.0f));
 		}
-
 	}
 
 	/// <summary>

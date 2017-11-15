@@ -35,6 +35,8 @@ public class MobManager : MonoBehaviour
 
 	private bool _isScoreChange;
 
+	private int[] _funCount = new int[Define.PLAYER_NUM_MAX + 1] {0, 0, 0, 0, 0};
+
 	private void Start()
 	{
 		_onScoreChange = () => 
@@ -58,5 +60,10 @@ public class MobManager : MonoBehaviour
 		_score.SetScore(Define.PlayerType.Third, _mobs.Where(e => e.FunType == Define.PlayerType.Third).Count());
 		_score.SetScore(Define.PlayerType.Force, _mobs.Where(e => e.FunType == Define.PlayerType.Force).Count());
 		_isScoreChange = false;
+	}
+
+	public int GetFunCount(Define.PlayerType playerType)
+	{	
+		return _funCount[(int)playerType];
 	}
 }

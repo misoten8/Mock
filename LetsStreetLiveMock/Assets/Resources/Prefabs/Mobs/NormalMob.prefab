@@ -157,10 +157,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38c956953de4b6f4c80552e5a38bc2a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rb: {fileID: 54049106572582298}
-  _velocity: 1
-  _maxVelocity: 5
-  _stopDistance: 3
+  _velocity: 0.2
+  _stopDistance: 2
   _slowDistance: 9
 --- !u!114 &114248920631976908
 MonoBehaviour:
