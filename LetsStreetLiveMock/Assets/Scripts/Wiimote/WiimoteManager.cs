@@ -220,7 +220,8 @@ public class WiimoteManager
 		}
 		return null;
 	}
-
+    
+    //  Wiiリモコン振動判定処理
 	public static bool GetSwing(int num)
 	{
 		if (!HasWiimote(num)) return false;
@@ -230,6 +231,7 @@ public class WiimoteManager
 		return false;
 	}
 
+    // ボタン取得処理
 	public static bool GetButton(int wmNum ,int buttonNum)
 	{
 		if (!HasWiimote(wmNum)) return false;

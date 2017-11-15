@@ -132,6 +132,8 @@ namespace WiimoteApi {
             _RollSpeed = 0;
         }
 
+        float accelOld = 0.0f;
+        bool swinged = false;
 		public bool GetSwing( int num)
 		{
 			if (!WiimoteManager.HasWiimote(num) )return false;
@@ -139,11 +141,16 @@ namespace WiimoteApi {
 			float ac = 0.0f;
 
 			ac = PitchSpeed + RollSpeed + YawSpeed;
-			if (ac > 300.0f)
-			{
-				swing = true;
-			}
-			return swing;
+            if (ac > 300.0f && accelOld < ac && swinged == false)
+            {
+                swing = true;
+                swinged = true;
+            }
+            else if( ac < 50.0f)
+            {
+                swinged = false;
+            }
+            return swing;
 		}
     }
 }
