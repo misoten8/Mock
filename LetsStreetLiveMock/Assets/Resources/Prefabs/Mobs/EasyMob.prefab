@@ -158,7 +158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rb: {fileID: 54658498035759368}
-  _velocity: 1
+  _velocity: 0.05
   _maxVelocity: 2
 --- !u!114 &114669695057850480
 MonoBehaviour:
@@ -185,9 +185,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38c956953de4b6f4c80552e5a38bc2a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _velocity: 0.2
+  _velocity: 0.1
   _stopDistance: 2
-  _slowDistance: 9
+  _slowDistance: 3
 --- !u!135 &135561516982709952
 SphereCollider:
   m_ObjectHideFlags: 1
