@@ -22,11 +22,6 @@ public class Dance : MonoBehaviour
 		get { return _isPlaing; }
 	}
 
-	public int GiveFanPoint
-	{
-		get { return _giveFanPoint; }
-	}
-
 	public bool IsSuccess
 	{
 		get { return _isSuccess; }
@@ -66,10 +61,7 @@ public class Dance : MonoBehaviour
 	[SerializeField]
 	private MeshRenderer _danceFloor;
 
-	/// <summary>
-	/// 人々に渡すファンポイント...ダンスの出来によって変動する
-	/// </summary>
-	private int _giveFanPoint = 100;
+	private int _dancePoint = 100;
 
 	private bool _isSuccess = false;
 
@@ -100,7 +92,7 @@ public class Dance : MonoBehaviour
 	{
 		_danceCollider.enabled = true;
 		_danceUI.NotActive();
-		_giveFanPoint = 0;
+		_dancePoint = 0;
 
 		_wmNum = (int)_player.Type - 1;
 	}
@@ -117,7 +109,7 @@ public class Dance : MonoBehaviour
 				ChangeFanPoint(_isRequestShake ? 1 : -1);
 				ParticleManager.Play(_isRequestShake ? "DanceNowClear" : "DanceNowFailed", new Vector3(), transform);
 			}
-			_danceUI.SetPointUpdate(_giveFanPoint);
+			_danceUI.SetPointUpdate(_dancePoint);
 		}
 	}
 
@@ -137,8 +129,7 @@ public class Dance : MonoBehaviour
 
 		_isTransing = false;
 		_isSuccess = false;
-		_giveFanPoint = 0;
-		//_danceCollider.enabled = true;
+		_dancePoint = 0;
 		SetCamera(true);
 		_danceUI.Active();
 		_danceFloor.enabled = true;
@@ -152,13 +143,9 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public void End()
 	{
-		if (_isTransing)
-			return;
-		
 		OnEndDance?.Invoke(false);
 		_danceUI.SetResult(IsSuccess);
 		_isTransing = true;
-		//_danceCollider.enabled = false;
 		Observable
 			.Timer(TimeSpan.FromSeconds(3))
 			.Subscribe(_ =>
@@ -169,8 +156,27 @@ public class Dance : MonoBehaviour
 				SetCamera(false);
 				_danceFloor.enabled = false;
 				// スコアを設定する
-				_giveFanPoint = 0;
+				_dancePoint = 0;
 			});
+	}
+
+	/// <summary>
+	/// ダンスを中断する
+	/// </summary>
+	public void Cancel()
+	{
+		if (_isTransing)
+			return;
+
+		OnEndDance?.Invoke(true);
+		_isPlaing = false;
+		_isTransing = false;
+		_danceUI.NotActive();
+		SetCamera(false);
+		_danceFloor.enabled = false;
+		// スコアを設定する
+		_dancePoint = 0;
+		StopCoroutine("StepDo");
 	}
 
 	/// <summary>
@@ -189,9 +195,9 @@ public class Dance : MonoBehaviour
 
 	private void ChangeFanPoint(int addValue)
 	{
-		_giveFanPoint += addValue;
+		_dancePoint += addValue;
 		_danceUI.SetPointColor(addValue > 0 ? new Color(0.0f, 1.0f, 0.0f) : new Color(1.0f, 0.0f, 0.0f));
-		if (_giveFanPoint >= 30)
+		if (_dancePoint >= 30)
 		{
 			_isSuccess = true;
 			_danceUI.SetPointColor(new Color(0.0f, 0.0f, 1.0f));

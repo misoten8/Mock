@@ -76,6 +76,13 @@ public class Player : MonoBehaviour
 				transform.Rotate(Vector3.up, _rotatePower);
 			if (Input.GetKey("down") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_LEFT))
 				_rb.AddForce(-transform.forward * _power);
+			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_TWO))
+				_dance.Begin();
+		}
+		else
+		{
+			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_ONE))
+				_dance.Cancel();
 		}
 	}
 
