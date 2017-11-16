@@ -56,7 +56,7 @@ public class PlayerManager : MonoBehaviour
 	private void Awake()
 	{
 		_isBattleActive = true;
-		StartCoroutine("DanceStartEvent");
+		//StartCoroutine("DanceStartEvent");
 	}
 
 	private void OnDisable()

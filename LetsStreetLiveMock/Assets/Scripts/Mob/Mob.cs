@@ -37,6 +37,7 @@ public class Mob : MonoBehaviour
 		get { return _funType; }
 	}
 
+	[SerializeField]
 	private Define.PlayerType _funType = Define.PlayerType.None;
 
 	/// <summary>
@@ -58,11 +59,6 @@ public class Mob : MonoBehaviour
 	/// モブが停止状態になった時に呼ぶイベント
 	/// </summary>
 	public event Action onStopMob;
-
-	/// <summary>
-	/// モブの推しが変化した時に呼ぶイベント
-	/// </summary>
-	public event Action onChangeFun;
 
 	/// <summary>
 	/// プレイヤー追従対象が変化した時に呼ぶイベント
@@ -156,19 +152,17 @@ public class Mob : MonoBehaviour
 		Dance playerDance = other.gameObject.GetComponent<Dance>();
 
 		// プレイヤーが客引きモードの場合、追従判定を行う(無所属限定)
-		if (!_playerManager.IsDanceMode)
+		if (!playerDance.IsPlaying)
 		{
-			if (FunType != Define.PlayerType.None)
-				return;
-
 			// プレイヤーが客引き状態の場合、追従判定を行う
 			if (_mobManager.GetFunCount(_fllowTarget) < _mobManager.GetFunCount(playerDance.PlayerType)
 				|| _fllowTarget == Define.PlayerType.None)
 			{
+				if (FunType != Define.PlayerType.None)
+					return;
 				_fllowTarget = playerDance.PlayerType;
 				onChangeFllowPlayer?.Invoke();
 			}
-
 			return;
 		}
 
@@ -183,38 +177,48 @@ public class Mob : MonoBehaviour
 		// ダンス終了イベントにメソッドを登録する
 		playerDance.OnEndDance += (isCancel) =>
 		{
-			// モブ再生イベント実行
-			onPlayMob?.Invoke();
+			// プレイヤーが客引き状態の場合、追従判定を行う
+			if (_mobManager.GetFunCount(_fllowTarget) < _mobManager.GetFunCount(playerDance.PlayerType)
+				|| _fllowTarget == Define.PlayerType.None)
+			{
+				if (FunType == Define.PlayerType.None)
+				{
+					_fllowTarget = playerDance.PlayerType;
+				}
+			}
 
 			Destroy(_danceNowEffect);
 
 			_isViewingInDance = false;
 
-			// モブキャラ管理クラスにスコア変更を通知
-			_mobManager.OnScoreChange();
-
-			// ファンタイプが変更したかチェックする
-			Define.PlayerType newFunType = playerDance.Player.Type;
-			if (_funType != newFunType)
+			if (isCancel)
 			{
-				// ファンタイプの更新
-				_funType = newFunType;
-
-				// 推しているプレイヤーの更新
-				_funPlayer = playerDance.Player;
-
-				// 追従対象の変更
-				_fllowTarget = playerDance.PlayerType;
-
-				// 追従プレイヤー変更イベント実行
-				onChangeFllowPlayer?.Invoke();
-
-				// アウトラインの更新
-				_meshRenderer.materials[1].color = playerDance.Player.PlayerColor;
-
-				// 一押しプレイヤー変化イベント実行
-				onChangeFun?.Invoke();
+				// モブ再生イベント実行
+				onPlayMob?.Invoke();
 			}
+			else
+			{
+				// モブキャラ管理クラスにスコア変更を通知
+				_mobManager.OnScoreChange();
+
+				// ファンタイプが変更したかチェックする
+				Define.PlayerType newFunType = playerDance.Player.Type;
+				if (_funType != newFunType)
+				{
+					// ファンタイプの更新
+					_funType = newFunType;
+
+					// 推しているプレイヤーの更新
+					_funPlayer = playerDance.Player;
+
+					// 追従プレイヤー変更イベント実行
+					onChangeFllowPlayer?.Invoke();
+
+					// アウトラインの更新
+					_meshRenderer.materials[1].color = playerDance.Player.PlayerColor;
+				}
+			}
+
 		};
 	}
 }
