@@ -904,11 +904,5 @@ public class Wiimote
             RequestIdentifyWiiMotionPlus();
             ActivateWiiMotionPlus();
        }
-
-       public void Rumble(bool rumble)
-       {
-           RumbleOn = rumble;
-           SendStatusInfoRequest();
-       }
 }
 }

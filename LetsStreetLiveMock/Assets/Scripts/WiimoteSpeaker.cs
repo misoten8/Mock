@@ -14,18 +14,20 @@ namespace WiimoteApi
 	{
 		// 変数宣言
 		private Thread audioThread;     // オーディオクリップスレッド
-		private bool enabled;
-		private bool muted;
-		private Wiimote wm;
+		private Wiimote wm;             // wiiリモコンハンドル
 
 		public WiimoteSpeaker(Wiimote Owner) : base(Owner)
 		{
 		}
 
+        // 初期化処理関数
 		public void Init()
 		{
-			enabled = true;
-			muted = true;
+            if (_Initialized)
+                return;
+
+            Enabled = true;
+            Muted = true;
 
 			Owner.SendRegisterWriteRequest(RegisterType.CONTROL, 0xa20009, new byte[] { 0x01 });
 			Owner.SendRegisterWriteRequest(RegisterType.CONTROL, 0xa20001, new byte[] { 0x08 });
@@ -37,9 +39,18 @@ namespace WiimoteApi
 			}
 
 			Owner.SendRegisterWriteRequest(RegisterType.CONTROL, 0xa20008, new byte[] { 0x01 });
-			muted = false;
+            Muted = false;
+            _Initialized = true;
 		}
 
+        // 初期化しているか
+        private bool _Initialized;
+        public bool Initiailized
+        {
+            get { return _Initialized; }
+        }
+
+        // スピーカーの有効化
 		private bool _Enabled;
 		public bool Enabled
 		{
@@ -55,7 +66,9 @@ namespace WiimoteApi
 			}
 		}
 
-		private bool _Muted
+        // ミュート
+        private bool _Muted;
+        public bool Muted
 		{
 			get
 			{
@@ -69,6 +82,7 @@ namespace WiimoteApi
 			}
 		}
 
+        // 再生中か確認
 		private bool IsPlaying
 		{
 			get
@@ -77,6 +91,7 @@ namespace WiimoteApi
 			}
 		}
 
+        // スレッドの作成
 		private void AudioThreadFunc(object buffObj)
 		{
 			byte[] buffer = (byte[])buffObj;
@@ -98,13 +113,16 @@ namespace WiimoteApi
 					}
 				}
 
-				// 一定間隔でデータを送信
-				Owner.SendWithType(OutputDataType.SPEAKER_DATA, chunk);
+                // 一定間隔でデータを送信
+                Owner.SendWithType(OutputDataType.SPEAKER_DATA, chunk);
+
 				Thread.Sleep(10);
 			}
 
 		}
 
+
+        // 再生準備関数
 		public int Play(AudioClip audioClip)
 		{
 			Init();
@@ -112,10 +130,11 @@ namespace WiimoteApi
 			if (IsPlaying)
 				return 0;
 			byte[] buffer = GetAudioClip(audioClip);
-			return _Play( buffer);
+			return Play( buffer);
 		}
 
-		public int _Play(byte[] buffer)
+        // 再生関数
+		public int Play(byte[] buffer)
 		{
 			Init();
 
@@ -128,6 +147,7 @@ namespace WiimoteApi
 			return 0;
 		}
 
+        //  音源の取得
 		private static byte[] GetAudioClip(AudioClip audioClip)
 		{
 			if (audioClip.channels != 1 || audioClip.frequency != 2000)

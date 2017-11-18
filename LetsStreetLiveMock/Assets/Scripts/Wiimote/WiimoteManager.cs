@@ -4,7 +4,11 @@ using System;
 using System.Threading;
 using System.Runtime.InteropServices;
 using WiimoteApi.Internal;
+using DG.Tweening;
 
+//=============================================================================
+//	スクリプト
+//=============================================================================
 namespace WiimoteApi { 
 
 public class WiimoteManager
@@ -14,7 +18,7 @@ public class WiimoteManager
     private const ushort product_id_wiimoteplus = 0x0330;
 
 
-    /// A list of all currently connected Wii Remotes.
+    //  接続されているWiiリモコンのリスト
     public static List<Wiimote> Wiimotes { get { return _Wiimotes; } }
     private static List<Wiimote> _Wiimotes = new List<Wiimote>();
 
@@ -42,6 +46,7 @@ public class WiimoteManager
         return ret;
     }
 
+    // Bluetoothにwiiリモコンが接続されているか確認
     private static bool _FindWiimotes(WiimoteType type)
     {
         //if (hidapi_wiimote != IntPtr.Zero)
@@ -115,15 +120,9 @@ public class WiimoteManager
         return found;
     }
 
-    /// \brief Disables the given \c Wiimote by closing its bluetooth HID connection.  Also removes the remote from Wiimotes
-    /// \param remote The remote to cleanup
+    // Wiiリモコンの接続を解除
     public static void Cleanup(Wiimote remote)
     {
-            //if (remote.hidapi_handle != IntPtr.Zero)
-            //    HIDapi.hid_close(remote.hidapi_handle);
-
-            //Wiimotes.Remove(remote);
-
             if (remote != null)
             {
                 if (remote.hidapi_handle != IntPtr.Zero)
@@ -134,12 +133,18 @@ public class WiimoteManager
             }
     }
 
-    /// \return If any Wii Remotes are connected and found by FindWiimote
+    //=============================================================================
+    //	関数名: public static bool HasWiimote()
+    //	引数  : なし
+    //	戻り値: なし
+    //	説明  : Wiiリモコンが1台以上接続されている確認する
+    //=============================================================================
     public static bool HasWiimote()
     {
         return !(Wiimotes.Count <= 0 || Wiimotes[0] == null || Wiimotes[0].hidapi_handle == IntPtr.Zero);
     }
-
+    
+    // 指定した番号のWiiリモコンが接続されているか確認する
 	public static bool HasWiimote(int num)
 	{
 		return !(Wiimotes.Count <= num || Wiimotes[num] == null || Wiimotes[num].hidapi_handle == IntPtr.Zero);
@@ -172,6 +177,12 @@ public class WiimoteManager
         return 0; // TODO: Better error handling
     }
 
+    //=============================================================================
+    //	関数名: int RecieveRaw(IntPtr hidapi_wiimote, byte[] buf)
+    //	引数  : Int
+    //	戻り値: なし
+    //	説明  : Wiiリモコンへのデータ送信関数
+    //=============================================================================
     private static Thread SendThreadObj;
     private static void SendThread()
     {
@@ -191,12 +202,12 @@ public class WiimoteManager
         }
     }
 
-    /// \brief Attempts to recieve RAW DATA to the given bluetooth HID device.  This is essentially a wrapper around HIDApi.
-    /// \param hidapi_wiimote The HIDApi device handle to write to.
-    /// \param buf The data to write.
-    /// \sa Wiimote::ReadWiimoteData()
-    /// \warning DO NOT use this unless you absolutely need to bypass the given Wiimote communication functions.
-    ///          Use the functionality provided by Wiimote instead.
+    //=============================================================================
+    //	関数名: int RecieveRaw(IntPtr hidapi_wiimote, byte[] buf)
+    //	引数  : Int
+    //	戻り値: なし
+    //	説明  : Wiiリモコンからのデータ受信関数
+    //=============================================================================
     public static int RecieveRaw(IntPtr hidapi_wiimote, byte[] buf)
     {
         if (hidapi_wiimote == IntPtr.Zero) return -2;
@@ -207,32 +218,50 @@ public class WiimoteManager
         return res;
     }
 
-    private class WriteQueueData {
-        public IntPtr pointer;
-        public byte[] data;
+    //=============================================================================
+    //  Wiiリモコンに送信するデータ
+    //=============================================================================
+    private class WriteQueueData
+    {
+    public IntPtr pointer;
+    public byte[] data;
     }
 
-	public Wiimote GetWiimote(int num)
+    //=============================================================================
+    //	関数名: bool GetSwing( int wmNum )
+    //	引数  : int wmNum : Wiiリモコン番号
+    //	戻り値: なし
+    //	説明  : Wiiリモコン振り判定処理関数
+    //=============================================================================
+    public static bool GetSwing(int wmNum)
 	{
-		if (num <= Wiimotes.Count)
-		{
-			return WiimoteManager.Wiimotes[num];
-		}
-		return null;
-	}
-    
-    //  Wiiリモコン振動判定処理
-	public static bool GetSwing(int num)
-	{
-		if (!HasWiimote(num)) return false;
-			//if (!Wiimotes[num].wmp_attached) return false;
-			Wiimotes[num].ReadWiimoteData();
-		if (Wiimotes[num].MotionPlus.GetSwing(num)) return true;
+		if (!HasWiimote(wmNum)) return false;
+			Wiimotes[wmNum].ReadWiimoteData();
+		if (Wiimotes[wmNum].MotionPlus.GetSwing(wmNum)) return true;
 		return false;
 	}
 
-    // ボタン取得処理
-	public static bool GetButton(int wmNum ,int buttonNum)
+    //=============================================================================
+    //	関数名: bool Rumble( int wmNum, bool rumble )
+    //	引数  : int wmNum : Wiiリモコン番号, bool rumle : 振動させるか止めるか
+    //	戻り値: 
+    //	説明  : Wiiリモコン振動制御関数
+    //=============================================================================
+    public static void Rumble(int wmNum, bool rumble)
+    {
+            if (!HasWiimote(wmNum)) return;
+
+            Wiimotes[wmNum].RumbleOn = rumble;
+            Wiimotes[wmNum].SendStatusInfoRequest();
+    }
+
+    //=============================================================================
+    //	関数名: bool GetButton( int wmNum, int buttonNum )
+    //	引数  : int wmNum : Wiiリモコン番号, int buttonNum : 取得するボタンの種類(ButtonDataに定義あり)
+    //	戻り値: bool down : していしたボタンが押されていたらtrueを返す
+    //	説明  : Wiiリモコンボタン情報取得処理関数
+    //=============================================================================
+    public static bool GetButton(int wmNum ,int buttonNum)
 	{
 		if (!HasWiimote(wmNum)) return false;
 
@@ -287,3 +316,6 @@ public class WiimoteManager
 	}
     }
 } // namespace WiimoteApi
+//=============================================================================
+//	End of file
+//=============================================================================

@@ -143,7 +143,14 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public void End()
 	{
+<<<<<<< HEAD
 		OnEndDance?.Invoke(false);
+=======
+		if (_isTransing)
+			return;
+		
+		OnEndDance.Invoke(false);
+>>>>>>> oring/wiimote/tobe/soundtest
 		_danceUI.SetResult(IsSuccess);
 		_isTransing = true;
 		Observable
@@ -168,7 +175,7 @@ public class Dance : MonoBehaviour
 		if (_isTransing)
 			return;
 
-		OnEndDance?.Invoke(true);
+		OnEndDance.Invoke(true);
 		_isPlaing = false;
 		_isTransing = false;
 		_danceUI.NotActive();

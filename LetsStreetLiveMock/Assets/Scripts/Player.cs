@@ -45,17 +45,20 @@ public class Player : MonoBehaviour
 	private Wiimote _wm;
 	private int _wmNum;
 
+    public AudioClip sound;
 	void Start()
 	{
 		// wiiリモコン初期化処理
 		WiimoteManager.FindWiimotes();
 		_wmNum = (int)_type - 1;
-		if (WiimoteManager.HasWiimote(_wmNum))
+        if (WiimoteManager.HasWiimote(_wmNum))
 		{
             _wm = WiimoteManager.Wiimotes[_wmNum];
             _wm.InitWiiMotionPlus();
+            _wm.Speaker.Init();
 			int i = _wmNum + 1;
 			_wm.SendPlayerLED(i == 1, i == 2, i == 3, i == 4);
+            WiimoteManager.Rumble(_wmNum, false);
 		}
 
 		_playerManager.onDanceStart += () =>
@@ -78,6 +81,17 @@ public class Player : MonoBehaviour
 				_rb.AddForce(-transform.forward * _power);
 			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_TWO))
 				_dance.Begin();
+<<<<<<< HEAD
+=======
+			}
+
+            if (WiimoteManager.GetSwing(_wmNum))
+            {
+                _wm = WiimoteManager.Wiimotes[_wmNum];
+                _wm.ReadWiimoteData();
+                _wm.Speaker.Play(sound);
+            }
+>>>>>>> oring/wiimote/tobe/soundtest
 		}
 		else
 		{
@@ -85,16 +99,4 @@ public class Player : MonoBehaviour
 				_dance.Cancel();
 		}
 	}
-
-    void OnApplicationQuit()
-    {
-		// 一括で実行させる
-        if (WiimoteManager.Wiimotes.Count > 0)
-        {
-            _wm = WiimoteManager.Wiimotes[0];
-            WiimoteManager.Cleanup(_wm);
-            _wm = null;
-            WiimoteManager.Wiimotes.Clear();
-        }
-    }
 }
