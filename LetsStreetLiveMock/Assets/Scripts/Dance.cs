@@ -146,7 +146,6 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public void End()
 	{
-		//TODO:dance.cs 競合発生個所  後で戸部にチェックしてもらう
 		onEndDance?.Invoke(false, IsSuccess);
 		onEndDance = null;
 		_danceUI.SetResult(IsSuccess);
