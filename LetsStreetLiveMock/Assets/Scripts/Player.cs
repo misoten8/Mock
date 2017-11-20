@@ -81,17 +81,14 @@ public class Player : MonoBehaviour
 				_rb.AddForce(-transform.forward * _power);
 			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_TWO))
 				_dance.Begin();
-<<<<<<< HEAD
-=======
-			}
 
-            if (WiimoteManager.GetSwing(_wmNum))
+			//TODO::player.cs 競合発生個所 後で戸部にチェックしてもらう
+			if (WiimoteManager.GetSwing(_wmNum))
             {
                 _wm = WiimoteManager.Wiimotes[_wmNum];
                 _wm.ReadWiimoteData();
                 _wm.Speaker.Play(sound);
             }
->>>>>>> oring/wiimote/tobe/soundtest
 		}
 		else
 		{

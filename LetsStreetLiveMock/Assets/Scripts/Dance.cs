@@ -143,14 +143,10 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public void End()
 	{
-<<<<<<< HEAD
-		OnEndDance?.Invoke(false);
-=======
 		if (_isTransing)
 			return;
-		
+		//TODO:dance.cs 競合発生個所  後で戸部にチェックしてもらう
 		OnEndDance.Invoke(false);
->>>>>>> oring/wiimote/tobe/soundtest
 		_danceUI.SetResult(IsSuccess);
 		_isTransing = true;
 		Observable
