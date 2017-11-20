@@ -25,7 +25,7 @@ public class Battle : MonoBehaviour
 		ResultScore.scoreArray[(int)Define.PlayerType.First] = _score.GetScore(Define.PlayerType.First);
 		ResultScore.scoreArray[(int)Define.PlayerType.Second] = _score.GetScore(Define.PlayerType.Second);
 		ResultScore.scoreArray[(int)Define.PlayerType.Third] = _score.GetScore(Define.PlayerType.Third);
-		ResultScore.scoreArray[(int)Define.PlayerType.Force] = _score.GetScore(Define.PlayerType.Force);
+		ResultScore.scoreArray[(int)Define.PlayerType.Fourth] = _score.GetScore(Define.PlayerType.Fourth);
 
 		SceneManager.LoadScene("Result");
 	}

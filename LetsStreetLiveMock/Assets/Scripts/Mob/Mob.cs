@@ -51,26 +51,22 @@ public class Mob : MonoBehaviour
 	private Player _funPlayer = null;
 
 	/// <summary>
-	/// モブが再生状態になった時に呼ぶイベント
+	/// モブが移動状態になった時に呼ぶイベント
 	/// </summary>
-	public event Action onPlayMob;
+	public event Action onMoveMob;
 
 	/// <summary>
-	/// モブが停止状態になった時に呼ぶイベント
+	/// モブがダンス視聴状態になった時に呼ぶイベント
 	/// </summary>
-	public event Action onStopMob;
+	public event Action onDanceWatchMob;
 
 	/// <summary>
 	/// プレイヤー追従対象が変化した時に呼ぶイベント
 	/// </summary>
 	public event Action onChangeFllowPlayer;
 
-
 	[SerializeField]
 	private Define.FanLevel _fanLevel;
-
-	//[SerializeField]
-	//private FanPoint _fanPoint;
 
 	[SerializeField]
 	private MobController _mobController;
@@ -86,15 +82,36 @@ public class Mob : MonoBehaviour
 	/// </summary>
 	private MobManager _mobManager;
 
+	/// <summary>
+	/// プレイヤー管理クラス
+	/// </summary>
 	public PlayerManager PlayerManager
 	{
 		get { return _playerManager; }
 	}
 
-	/// <summary>
-	/// プレイヤー管理クラス
-	/// </summary>
 	private PlayerManager _playerManager;
+
+
+	/// <summary>
+	/// 追従する対象プレイヤー
+	/// </summary>
+	public Define.PlayerType FllowTarget
+	{
+		get { return _fllowTarget; }
+	}
+
+	private Define.PlayerType _fllowTarget = Define.PlayerType.None;
+
+	/// <summary>
+	/// モブ生成番号
+	/// </summary>
+	public int InstanceID
+	{
+		get { return _instanceID; }
+	}
+
+	private int _instanceID;
 
 	/// <summary>
 	/// ダンス視聴中エフェクト
@@ -106,15 +123,6 @@ public class Mob : MonoBehaviour
 	/// </summary>
 	private bool _isViewingInDance;
 
-	public Define.PlayerType FllowTarget
-	{
-		get { return _fllowTarget; }
-	}
-
-	/// <summary>
-	/// 追従する対象プレイヤー
-	/// </summary>
-	private Define.PlayerType _fllowTarget = Define.PlayerType.None;
 
 	/// <summary>
 	/// モブ生成時に呼ばれる
@@ -123,6 +131,7 @@ public class Mob : MonoBehaviour
 	{
 		_mobManager = mobCaches.mobManager;
 		_playerManager = mobCaches.playerManager;
+		_instanceID = mobCaches.instanceID;
 	}
 
 	private void Start()
@@ -137,10 +146,10 @@ public class Mob : MonoBehaviour
 		_meshRenderer.materials[1].color = new Color(0.2f, 0.2f, 0.2f);
 
 		// モブ再生イベント実行
-		onPlayMob?.Invoke();
+		onMoveMob?.Invoke();
 	}
 
-	private void OnTriggerEnter(Collider other)
+	private void OnTriggerStay(Collider other)
 	{
 		if (other.tag != "DanceRange")
 			return;
@@ -151,8 +160,64 @@ public class Mob : MonoBehaviour
 
 		Dance playerDance = other.gameObject.GetComponent<Dance>();
 
-		// プレイヤーが客引きモードの場合、追従判定を行う(無所属限定)
-		if (!playerDance.IsPlaying)
+		// プレイヤーがダンス中であれば、視聴する
+		if (playerDance.IsPlaying)
+		{
+			Debug.Log(_instanceID.ToString() + "番のモブは視聴するドン！");
+			// モブ停止イベント実行
+			onDanceWatchMob?.Invoke();
+
+			// ダンス視聴中エフェクト再生
+			_danceNowEffect = ParticleManager.Play("DanceNow", new Vector3(), transform);
+
+			_isViewingInDance = true;
+
+			// ダンス終了イベントにメソッドを登録する
+			playerDance.onEndDance += (isCancel, isSuccess) =>
+			{
+				_isViewingInDance = false;
+
+				if (!isCancel)
+				{
+					// モブキャラ管理クラスにスコア変更を通知
+					_mobManager.OnScoreChange();
+
+					// ファンタイプが変更したかチェックする
+					Define.PlayerType newFunType = isSuccess ? playerDance.Player.Type : Define.PlayerType.None;
+					if (_funType != newFunType)
+					{
+						// ファンタイプの更新
+						_funType = newFunType;
+
+						// 推しているプレイヤーの更新
+						_funPlayer = playerDance.Player;
+
+						// 追従対象の更新
+						_fllowTarget = playerDance.PlayerType;
+
+						// アウトラインの更新
+						_meshRenderer.materials[1].color = playerDance.Player.PlayerColor;
+					}
+				}
+
+				// プレイヤーが客引き状態の場合、追従判定を行う
+				if (_mobManager.GetFunCount(_fllowTarget) < _mobManager.GetFunCount(playerDance.PlayerType)
+						|| _fllowTarget == Define.PlayerType.None)
+				{
+					if (FunType == Define.PlayerType.None)
+					{
+						// 追従対象の更新
+						_fllowTarget = playerDance.PlayerType;
+					}
+				}
+
+				// モブ再生イベント実行
+				onMoveMob?.Invoke();
+
+				Destroy(_danceNowEffect);
+			};
+		}
+		else
 		{
 			// プレイヤーが客引き状態の場合、追従判定を行う
 			if (_mobManager.GetFunCount(_fllowTarget) < _mobManager.GetFunCount(playerDance.PlayerType)
@@ -163,62 +228,6 @@ public class Mob : MonoBehaviour
 				_fllowTarget = playerDance.PlayerType;
 				onChangeFllowPlayer?.Invoke();
 			}
-			return;
 		}
-
-		// モブ停止イベント実行
-		onStopMob?.Invoke();
-
-		// ダンス視聴中エフェクト再生
-		_danceNowEffect = ParticleManager.Play("DanceNow", new Vector3(), transform);
-
-		_isViewingInDance = true;
-
-		// ダンス終了イベントにメソッドを登録する
-		playerDance.OnEndDance += (isCancel) =>
-		{
-			// プレイヤーが客引き状態の場合、追従判定を行う
-			if (_mobManager.GetFunCount(_fllowTarget) < _mobManager.GetFunCount(playerDance.PlayerType)
-				|| _fllowTarget == Define.PlayerType.None)
-			{
-				if (FunType == Define.PlayerType.None)
-				{
-					_fllowTarget = playerDance.PlayerType;
-				}
-			}
-
-			Destroy(_danceNowEffect);
-
-			_isViewingInDance = false;
-
-			if (isCancel)
-			{
-				// モブ再生イベント実行
-				onPlayMob?.Invoke();
-			}
-			else
-			{
-				// モブキャラ管理クラスにスコア変更を通知
-				_mobManager.OnScoreChange();
-
-				// ファンタイプが変更したかチェックする
-				Define.PlayerType newFunType = playerDance.Player.Type;
-				if (_funType != newFunType)
-				{
-					// ファンタイプの更新
-					_funType = newFunType;
-
-					// 推しているプレイヤーの更新
-					_funPlayer = playerDance.Player;
-
-					// 追従プレイヤー変更イベント実行
-					onChangeFllowPlayer?.Invoke();
-
-					// アウトラインの更新
-					_meshRenderer.materials[1].color = playerDance.Player.PlayerColor;
-				}
-			}
-
-		};
 	}
 }

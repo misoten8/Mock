@@ -156,7 +156,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1024, y: 764}
+  m_ReferenceResolution: {x: 1024, y: 576}
   m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -171,7 +171,7 @@ Canvas:
   m_GameObject: {fileID: 13987205}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 1452098318}
   m_PlaneDistance: 1
   m_PixelPerfect: 0
@@ -1025,7 +1025,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1024, y: 764}
+  m_ReferenceResolution: {x: 1024, y: 576}
   m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -1040,7 +1040,7 @@ Canvas:
   m_GameObject: {fileID: 470994634}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 1958311454}
   m_PlaneDistance: 1
   m_PixelPerfect: 0
@@ -1649,7 +1649,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1024, y: 764}
+  m_ReferenceResolution: {x: 1024, y: 576}
   m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -1664,7 +1664,7 @@ Canvas:
   m_GameObject: {fileID: 880963004}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 1866917639}
   m_PlaneDistance: 1
   m_PixelPerfect: 0
@@ -1841,7 +1841,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1024, y: 764}
+  m_ReferenceResolution: {x: 1024, y: 576}
   m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -1856,7 +1856,7 @@ Canvas:
   m_GameObject: {fileID: 1014194296}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 1793189273}
   m_PlaneDistance: 1
   m_PixelPerfect: 0

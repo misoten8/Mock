@@ -17,6 +17,9 @@ public class Dance : MonoBehaviour
 		get { return _player.Type; }
 	}
 
+	/// <summary>
+	/// ダンス中かどうか
+	/// </summary>
 	public bool IsPlaying
 	{
 		get { return _isPlaing; }
@@ -44,7 +47,7 @@ public class Dance : MonoBehaviour
 	/// ダンス終了時実行イベント
 	/// bool型引数 -> このダンスが中断されたかどうか
 	/// </summary>
-	public Action<bool> OnEndDance;
+	public event Action<bool, bool> onEndDance;
 
 	[SerializeField]
 	private Camera _camera;
@@ -81,7 +84,7 @@ public class Dance : MonoBehaviour
 	private Wiimote _wm;
 	private int _wmNum;
 
-	
+
 
 	/// <summary>
 	/// 各リクエスト事の持続時間
@@ -99,12 +102,12 @@ public class Dance : MonoBehaviour
 
 	void Update()
 	{
-        if (IsPlaying)
+		if (IsPlaying)
 		{
 			if (_isTransing)
 				return;
 
-			if (Input.GetKeyDown("return") || WiimoteManager.GetSwing( _wmNum))
+			if (Input.GetKeyDown("return") || WiimoteManager.GetSwing(_wmNum))
 			{
 				ChangeFanPoint(_isRequestShake ? 1 : -1);
 				ParticleManager.Play(_isRequestShake ? "DanceNowClear" : "DanceNowFailed", new Vector3(), transform);
@@ -143,17 +146,17 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public void End()
 	{
-		if (_isTransing)
-			return;
 		//TODO:dance.cs 競合発生個所  後で戸部にチェックしてもらう
-		OnEndDance.Invoke(false);
+		onEndDance?.Invoke(false, IsSuccess);
+		onEndDance = null;
 		_danceUI.SetResult(IsSuccess);
 		_isTransing = true;
+		_isPlaing = false;
+		StopCoroutine("StepDo");
 		Observable
 			.Timer(TimeSpan.FromSeconds(3))
 			.Subscribe(_ =>
 			{
-				_isPlaing = false;
 				_isTransing = false;
 				_danceUI.NotActive();
 				SetCamera(false);
@@ -171,7 +174,8 @@ public class Dance : MonoBehaviour
 		if (_isTransing)
 			return;
 
-		OnEndDance.Invoke(true);
+		onEndDance?.Invoke(true, IsSuccess);
+		onEndDance = null;
 		_isPlaing = false;
 		_isTransing = false;
 		_danceUI.NotActive();
@@ -208,7 +212,7 @@ public class Dance : MonoBehaviour
 	}
 
 	/// <summary>
-	/// ダンスのステップ事に処理を実行する
+	/// ダンス要求リクエストのステップ事に処理を実行する
 	/// </summary>
 	private IEnumerator StepDo()
 	{

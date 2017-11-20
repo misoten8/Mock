@@ -27,21 +27,23 @@ public class MobController : MonoBehaviour
 	void Start()
 	{
 		// モブ再生イベントで実行する処理を追加
-		_mob.onPlayMob += () =>
+		_mob.onMoveMob += () =>
 		{
 			if (_mob.FllowTarget == Define.PlayerType.None)
 			{
+				Debug.Log(_mob.InstanceID.ToString() + "番のモブは徘徊するドン！");
 				_wanderMove.OnStart();
-				_followMove.enabled = false;
 			}
 			else
 			{
 				if (_mob.FunType == Define.PlayerType.None)
 				{
+					Debug.Log(_mob.InstanceID.ToString() + "番のモブは" + _mob.FllowTarget.ToString() + "の人の群れに付いていくドン！");
 					_followMove.OnStart(_mob.PlayerManager.GetPlayer(_mob.FllowTarget).transform);
 				}
 				else
 				{
+					Debug.Log(_mob.InstanceID.ToString() + "番のモブは" + _mob.funPlayer.ToString() + "に付いていくドン！");
 					_followMove.OnStart(_mob.funPlayer.transform);
 				}
 				_wanderMove.enabled = false;
@@ -49,7 +51,7 @@ public class MobController : MonoBehaviour
 		};
 
 		// モブ停止イベントで実行する処理を追加
-		_mob.onStopMob += () =>
+		_mob.onDanceWatchMob += () =>
 		{
 			_followMove.enabled = false;
 			_wanderMove.enabled = false;
