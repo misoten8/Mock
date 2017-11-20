@@ -17,4 +17,5 @@ public class DanceCamera : MonoBehaviour {
             vcam.Priority = priority;
         }
     }
+
 }

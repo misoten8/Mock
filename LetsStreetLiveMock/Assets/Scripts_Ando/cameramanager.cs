@@ -7,28 +7,36 @@ public class cameramanager : MonoBehaviour {
     //=======================================
     //構造体
     //=======================================
-    enum CAMERATYPE
+    public enum CAMERATYPE
     {
-        PLAYER_CAMERA,
-        DANCE_START,
-        DANCE_0,
-        DANCE_1,
-        DANCE_2,
-        DANCE_3;
+        DANCE1,
+        DANCE2,
+        DANCE3,
+        DANCE4,
+        PLAYER,
+        END
+    };
+    //=======================================
+    //構造体
+    //=======================================
+    public enum CAMERAMODE
+    {
+        NORMAL,
+        DANCE_INTRO,
+        DANCE,
+        END
     };
     //=======================================
     //グローバル変数
     //=======================================
-    private unitychandemo1   player;
-    private playercamera playercamera;
-    [SerializeField] private DanceCamera[]  dancecamera =  new DanceCamera[4]; 
     public const int PRIORITY_HIGH      = 15; // 優先度 高
     public const int PRIORITY_LOW       = PRIORITY_HIGH - 1; // HIGHより低ければなんでもOK
-    private int CAMERA_MAX  = 4; //カメラの最大数
-    private int CHANGE_TIME = 4;//モードを変える時間
-    private float cnt;
+    public const int CAMERA_MAX  = (int)CAMERATYPE.END; //カメラの最大数
+    private const int CHANGE_TIME = 4;//モードを変える時間
     private float changetime;   //動きを更新する時刻
     private CinemachineBrain brain;
+    private CAMERAMODE g_mode;
+    [SerializeField] private DanceCamera[] dancecamera = new DanceCamera[CAMERA_MAX];
     //=======================================
     //関数名 Start
     //引き数
@@ -36,12 +44,12 @@ public class cameramanager : MonoBehaviour {
     //=======================================
     void Start ()
     {
-        player         = GameObject.Find("Player").GetComponent<unitychandemo1>();
-        playercamera   = GameObject.Find("CM Player").GetComponent<playercamera>();
+        g_mode = CAMERAMODE.NORMAL;
         dancecamera[0] = GameObject.Find("CM DanceCamera1").GetComponent<DanceCamera>();
         dancecamera[1] = GameObject.Find("CM DanceCamera2").GetComponent<DanceCamera>();
         dancecamera[2] = GameObject.Find("CM DanceCamera3").GetComponent<DanceCamera>();
         dancecamera[3] = GameObject.Find("CM DanceCamera4").GetComponent<DanceCamera>();
+        dancecamera[4] = GameObject.Find("CM PlayerCamera").GetComponent<DanceCamera>();
     }
     //=======================================
     //関数名 Update
@@ -50,34 +58,46 @@ public class cameramanager : MonoBehaviour {
     //=======================================
     void Update()
     {
-
-        unitychandemo1.Mode mode = player.GetMode();
-        switch (mode)
+        Debug.Log(g_mode);
+        if (Input.GetKeyDown("k"))
         {
-            case unitychandemo1.Mode.NORMAL:
+            SetCameraMode(CAMERAMODE.DANCE_INTRO);
+        }
+
+        switch (g_mode)
+        {     
+            //===========================
+            //後ろから追従するカメラ
+            //===========================
+            case CAMERAMODE.NORMAL:
                 Setblend(1);
-                playercamera.SetPriority(PRIORITY_HIGH);
-                dancecamera[0].SetPriority(PRIORITY_LOW);
+                SetCameraPriority((int)CAMERATYPE.PLAYER);
                 break;
-            case unitychandemo1.Mode.DANCEINTRO:
-                SetCameraPriority(0);
-                playercamera.SetPriority(PRIORITY_LOW);
+            //===========================
+            //プレイヤーを前から撮影
+            //===========================
+            case CAMERAMODE.DANCE_INTRO:
+                SetCameraPriority((int)CAMERATYPE.DANCE1);//０番目のカメラを優先表示
                 //一定時間経過でランダム
                 if (changetime < Time.time)
                 {
-                    player.SetMode(unitychandemo1.Mode.DANCE);
+                    g_mode = CAMERAMODE.DANCE;
                 }
                 changetime = Time.time + CHANGE_TIME;  //次の更新時刻を決める
                 break;
-            case unitychandemo1.Mode.DANCE:
+            //====================================
+            //こっからカメラランダム＆切り替わり減衰無し
+            //====================================
+            case CAMERAMODE.DANCE:
                 if (changetime < Time.time)
                 {
                     Setblend(0);
-                    int random = Random.Range(0, 4);
+                    int random = Random.Range(0, CAMERA_MAX-1);
                     Debug.Log(random);
                     SetCameraPriority(random);
                     changetime = Time.time + CHANGE_TIME;  //次の更新時刻を決める
                 }
+               
                 break;
         }
     }
@@ -93,15 +113,24 @@ public class cameramanager : MonoBehaviour {
     }
     //=======================================
     //関数名 SetCameraPriority
-    //引き数
+    //引き数 num番のカメラを優先表示する
     //戻り値
     //=======================================
-    void SetCameraPriority(int num)
+    void SetCameraPriority(int type)
     {
         for (int i = 0; i < CAMERA_MAX; i++)
         {
             dancecamera[i].SetPriority(PRIORITY_LOW);
         }
-        dancecamera[num].SetPriority(PRIORITY_HIGH);
+        dancecamera[type].SetPriority(PRIORITY_HIGH);
+    }
+    //=======================================
+    //関数名 SetCameraMode
+    //引き数 カメラのモードを設定
+    //戻り値
+    //=======================================
+    public void SetCameraMode(CAMERAMODE mode)
+    {
+        g_mode = mode;
     }
 }
