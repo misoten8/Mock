@@ -58,7 +58,7 @@ public class MobManager : MonoBehaviour
 		_score.SetScore(Define.PlayerType.First, _mobs.Where(e => e.FunType == Define.PlayerType.First).Count());
 		_score.SetScore(Define.PlayerType.Second, _mobs.Where(e => e.FunType == Define.PlayerType.Second).Count());
 		_score.SetScore(Define.PlayerType.Third, _mobs.Where(e => e.FunType == Define.PlayerType.Third).Count());
-		_score.SetScore(Define.PlayerType.Force, _mobs.Where(e => e.FunType == Define.PlayerType.Force).Count());
+		_score.SetScore(Define.PlayerType.Fourth, _mobs.Where(e => e.FunType == Define.PlayerType.Fourth).Count());
 		_isScoreChange = false;
 	}
 
@@ -66,4 +66,13 @@ public class MobManager : MonoBehaviour
 	{	
 		return _funCount[(int)playerType];
 	}
+
+	/// <summary>
+	/// 指定座標の範囲内に存在するモブを渡す
+	/// </summary>
+	public Mob[] FindNearMobs(Vector3 worldPos, float range)
+	{
+		return _mobs.Where(e => Vector3.Distance(e.transform.position, worldPos) < range)?.ToArray();
+	}
+
 }

@@ -59,11 +59,13 @@ public class MobGenerator : MonoBehaviour
 	{
 		public MobManager mobManager;
 		public PlayerManager playerManager;
+		public int instanceID;
 
-		public MobCaches(MobManager MobManager, PlayerManager PlayerManager)
+		public MobCaches(MobManager MobManager, PlayerManager PlayerManager, int InstanceID)
 		{
 			mobManager = MobManager;
 			playerManager = PlayerManager;
+			instanceID = InstanceID;
 		}
 	}
 
@@ -76,7 +78,7 @@ public class MobGenerator : MonoBehaviour
 
 	void Start()
 	{
-		_mobCaches = new MobCaches(_mobManager, _playerManager);
+		_mobCaches = new MobCaches(_mobManager, _playerManager, 0);
 		CreateStart();
 	}
 
@@ -86,6 +88,7 @@ public class MobGenerator : MonoBehaviour
 		people.transform.position = transform.position + new Vector3(Random.Range(-_rangeSize.x, _rangeSize.x), 0, Random.Range(-_rangeSize.y, _rangeSize.y));
 
 		var mob = people.GetComponent<Mob>();
+		_mobCaches.instanceID++;
 		mob.OnAwake(_mobCaches);
 		_mobManager.Mobs.Add(mob);
 		//foreach(Mob element in _list )

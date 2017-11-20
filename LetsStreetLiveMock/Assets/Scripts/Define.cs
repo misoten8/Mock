@@ -81,6 +81,6 @@ public static class Define
 		/// <summary>
 		/// Player4
 		/// </summary>
-		Force
+		Fourth
 	}
 }
