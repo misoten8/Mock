@@ -61,7 +61,7 @@ public class cameramanager : MonoBehaviour {
         Debug.Log(g_mode);
         if (Input.GetKeyDown("k"))
         {
-            SetCameraMode(CAMERAMODE.DANCE_INTRO);
+            ChangeCameraMode();
         }
 
         switch (g_mode)
@@ -82,8 +82,8 @@ public class cameramanager : MonoBehaviour {
                 if (changetime < Time.time)
                 {
                     g_mode = CAMERAMODE.DANCE;
+                    changetime = Time.time + CHANGE_TIME;  //次の更新時刻を決める
                 }
-                changetime = Time.time + CHANGE_TIME;  //次の更新時刻を決める
                 break;
             //====================================
             //こっからカメラランダム＆切り替わり減衰無し
@@ -97,7 +97,6 @@ public class cameramanager : MonoBehaviour {
                     SetCameraPriority(random);
                     changetime = Time.time + CHANGE_TIME;  //次の更新時刻を決める
                 }
-               
                 break;
         }
     }
@@ -132,5 +131,24 @@ public class cameramanager : MonoBehaviour {
     public void SetCameraMode(CAMERAMODE mode)
     {
         g_mode = mode;
+    }
+    //=======================================
+    //関数名 ChangeCameraMode
+    //引き数 ダンス終了かダンス開始か
+    //戻り値
+    //=======================================
+    public void ChangeCameraMode()
+    {
+        if (g_mode == CAMERAMODE.NORMAL)
+        {
+            g_mode = CAMERAMODE.DANCE_INTRO;
+            return;
+        }
+        else if(g_mode == CAMERAMODE.DANCE || g_mode == CAMERAMODE.DANCE_INTRO)
+        {
+            g_mode = CAMERAMODE.NORMAL;
+            return;
+        }
+
     }
 }
