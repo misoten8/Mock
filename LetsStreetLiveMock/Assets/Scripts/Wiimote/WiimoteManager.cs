@@ -16,6 +16,7 @@ public class WiimoteManager
     private const ushort vendor_id_wiimote = 0x057e;
     private const ushort product_id_wiimote = 0x0306;
     private const ushort product_id_wiimoteplus = 0x0330;
+    private static Vector3 nonWiimote = new Vector3(0.0f, -1.0f, 0.0f);
 
 
     //  接続されているWiiリモコンのリスト
@@ -314,6 +315,19 @@ public class WiimoteManager
 			}
 		return down;
 	}
+
+        //=============================================================================
+        //	関数名: Vector3 GetAngle(int wmNum)
+        //	引数  : int wmNum : wiiリモコン番号
+        //	戻り値: 指定した番号のwiiリモコンの角度を返す
+        //	説明  : Wiiリモコン角度取得関数
+        //=============================================================================
+        public static Vector3 GetAngle(int wmNum)
+    {
+        if (!HasWiimote(wmNum) ) return nonWiimote;
+
+        return Wiimotes[wmNum].Accel.GetAccelVector();
+    }
     }
 } // namespace WiimoteApi
 //=============================================================================
