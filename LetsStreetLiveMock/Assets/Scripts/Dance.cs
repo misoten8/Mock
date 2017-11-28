@@ -64,6 +64,9 @@ public class Dance : MonoBehaviour
 	[SerializeField]
 	private MeshRenderer _danceFloor;
 
+	[SerializeField]
+	private cameramanager _cameramanager;
+
 	private int _dancePoint = 100;
 
 	private bool _isSuccess = false;
@@ -137,7 +140,7 @@ public class Dance : MonoBehaviour
 		_danceUI.Active();
 		_danceFloor.enabled = true;
 		_isPlaing = true;
-
+		_cameramanager?.ChangeCameraMode();
 		StartCoroutine("StepDo");
 	}
 
@@ -162,6 +165,7 @@ public class Dance : MonoBehaviour
 				_danceFloor.enabled = false;
 				// スコアを設定する
 				_dancePoint = 0;
+				_cameramanager?.ChangeCameraMode();
 			});
 	}
 
@@ -182,6 +186,7 @@ public class Dance : MonoBehaviour
 		_danceFloor.enabled = false;
 		// スコアを設定する
 		_dancePoint = 0;
+		_cameramanager?.ChangeCameraMode();
 		StopCoroutine("StepDo");
 	}
 
