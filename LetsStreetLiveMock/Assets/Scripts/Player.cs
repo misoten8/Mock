@@ -45,7 +45,6 @@ public class Player : MonoBehaviour
 	private Wiimote _wm;
 	private int _wmNum;
 
-    public AudioClip sound;
 	void Start()
 	{
 		// wiiリモコン初期化処理
