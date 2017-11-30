@@ -319,7 +319,6 @@ MonoBehaviour:
   _animator: {fileID: 60955481}
   _dance: {fileID: 871764280}
   _playerManager: {fileID: 594352205}
-  sound: {fileID: 0}
 --- !u!95 &60955481 stripped
 Animator:
   m_PrefabParentObject: {fileID: 9500000, guid: fe5e0906a210d7c4d9836be0563cdcce,
@@ -497,7 +496,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Path: {fileID: 1212764459}
-  m_PathPosition: 0.9337904
+  m_PathPosition: 0.0615871
   m_PathOffset: {x: 0, y: 0, z: 0}
   m_XDamping: 0
   m_YDamping: 0
@@ -569,8 +568,8 @@ Transform:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 217689252}
-  m_LocalRotation: {x: -0, y: 0.9985888, z: 0.053107586, w: 0}
-  m_LocalPosition: {x: -447, y: 2.9099998, z: -145}
+  m_LocalRotation: {x: -0.050919212, y: -0, z: -0, w: 0.9987028}
+  m_LocalPosition: {x: -447, y: 2.9099998, z: -151.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1990251095}
@@ -812,7 +811,6 @@ MonoBehaviour:
   _animator: {fileID: 221819148}
   _dance: {fileID: 134893255}
   _playerManager: {fileID: 594352205}
-  sound: {fileID: 0}
 --- !u!95 &221819148 stripped
 Animator:
   m_PrefabParentObject: {fileID: 95711890678322932, guid: 5b5719f82e355574e8d20573e708aa23,
@@ -1570,7 +1568,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _battle: {fileID: 594352199}
-  _limitTime: 300
+  _limitTime: 180
   _currentTime: 0
 --- !u!114 &594352204
 MonoBehaviour:
@@ -2005,8 +2003,8 @@ Transform:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 883001440}
-  m_LocalRotation: {x: 0.0024129427, y: 0.6560727, z: -0.0020976346, w: 0.75469095}
-  m_LocalPosition: {x: -452.9758, y: 2.338588, z: -148.83957}
+  m_LocalRotation: {x: 0.0010643321, y: 0.87291646, z: 0.0019043656, w: -0.48786485}
+  m_LocalPosition: {x: -443.25565, y: 2.2808185, z: -145.69653}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 152324105}
@@ -2034,7 +2032,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   velocity: 1
-  currentDistance: 12.88216
+  currentDistance: 1.50554
 --- !u!114 &883001443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2529,7 +2527,7 @@ MonoBehaviour:
   m_ExcludedPropertiesInInspector:
   - m_Script
   m_LockStageInInspector: 
-  m_Priority: 15
+  m_Priority: 14
   m_LookAt: {fileID: 1653197630}
   m_Follow: {fileID: 1653197630}
   m_Lens:
@@ -3096,7 +3094,6 @@ MonoBehaviour:
   _animator: {fileID: 1334522314}
   _dance: {fileID: 618399137}
   _playerManager: {fileID: 594352205}
-  sound: {fileID: 0}
 --- !u!54 &1334522313
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3183,7 +3180,7 @@ MonoBehaviour:
   m_ExcludedPropertiesInInspector:
   - m_Script
   m_LockStageInInspector: 
-  m_Priority: 14
+  m_Priority: 15
   m_LookAt: {fileID: 1653197630}
   m_Follow: {fileID: 1653197630}
   m_Lens:
@@ -3741,7 +3738,6 @@ MonoBehaviour:
   _animator: {fileID: 1612624959}
   _dance: {fileID: 421753085}
   _playerManager: {fileID: 594352205}
-  sound: {fileID: 0}
 --- !u!135 &1612624962
 SphereCollider:
   m_ObjectHideFlags: 0
