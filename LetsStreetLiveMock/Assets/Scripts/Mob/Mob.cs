@@ -124,11 +124,6 @@ public class Mob : MonoBehaviour
 	/// </summary>
 	private bool _isViewingInDance;
 
-    [SerializeField]
-    private Player[] player          = new Player[4];
-    [SerializeField]
-    private Player.PLAYERMODE[] mode = new Player.PLAYERMODE[4];
-
     /// <summary>
     /// モブ生成時に呼ばれる
     /// </summary>
@@ -168,8 +163,6 @@ public class Mob : MonoBehaviour
 
         if (playerDance.Player.GetPlayerMode() == Player.PLAYERMODE.MOVE)
         {
-
-
             // モブキャラ管理クラスにスコア変更を通知
             _mobManager.OnScoreChange();
 

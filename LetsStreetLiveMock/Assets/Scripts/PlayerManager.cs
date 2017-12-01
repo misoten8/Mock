@@ -17,7 +17,7 @@ public class PlayerManager : MonoBehaviour
 	/// <summary>
 	/// ダンス開始するまでの間隔
 	/// </summary>
-	public const float DANCE_START_INTERVAL = 20.0f;
+	public const float BATTLE_TIME = 5.0f;
 
 	/// <summary>
 	/// 一回のダンスで発生するリクエスト回数
@@ -53,6 +53,8 @@ public class PlayerManager : MonoBehaviour
 	/// </summary>
 	private bool _isBattleActive = true;
 
+    private Define.PlayerType _type1, _type2;
+
 	private void Awake()
 	{
 		_isBattleActive = true;
@@ -77,23 +79,62 @@ public class PlayerManager : MonoBehaviour
 	/// </summary>
 	private IEnumerator DanceStartEvent()
 	{
-		do
-		{
-			yield return new WaitForSeconds(DANCE_START_INTERVAL);
-
-			_isDanceMode = true;
-
-			// ダンス開始イベントを実行
-			onDanceStart?.Invoke();
-
-			yield return new WaitForSeconds(DANCE_TIME);
-
-			_isDanceMode = false;
-
-			// 全体通知イベントを実行する
-
-		} while (_isBattleActive);
-
-		yield return null;
+        Define.PlayerType type1, type2;
+        type1 = _type1;
+        type2 = _type2;
+    
+        yield return new WaitForSeconds(BATTLE_TIME);
+        Debug.Log("Dancestartevent");
+        //プレイヤーのバトル終了を通知
+        if (_players[(int)type1 - 1].battlegauge > _players[(int)type2 - 1].battlegauge)
+        {
+            Debug.Log(_players[(int)type1 - 1].Type + "P勝ち");
+            Debug.Log(_players[(int)type2 - 1].Type + "P負け");
+            _players[(int)type1 - 1].OnBattleEnd(true);
+            _players[(int)type2 - 1].OnBattleEnd(false);
+            Debug.Log("1P : "+_players[(int)type1 - 1].battlegauge);
+            Debug.Log("2P : "+_players[(int)type2 - 1].battlegauge);
+        }
+        else if (_players[(int)type1 - 1].battlegauge < _players[(int)type2 - 1].battlegauge)
+        {
+            Debug.Log(_players[(int)type1 - 1].Type + "P負け");
+            Debug.Log(_players[(int)type2 - 1].Type + "P勝ち");
+            _players[(int)type1 - 1].OnBattleEnd(false);
+            _players[(int)type2 - 1].OnBattleEnd(true);
+            Debug.Log("1P : " + _players[(int)type1 - 1].battlegauge);
+            Debug.Log("2P : " + _players[(int)type2 - 1].battlegauge);
+        }
+        else
+        {
+            Debug.Log("引き分け");
+            _players[(int)type1 - 1].OnBattleEnd(false);
+            _players[(int)type2 - 1].OnBattleEnd(false);
+            Debug.Log("1P : " + _players[(int)type1 - 1].battlegauge);
+            Debug.Log("2P : " + _players[(int)type2 - 1].battlegauge);
+        }
+        yield return null;
 	}
+    /// <summary>
+    /// バトル開始時の処理
+    /// </summary>
+    /// <param name="type1"></param>
+    /// <param name="type2"></param>
+    public void OnBattleStart(Define.PlayerType type1, Define.PlayerType type2)
+    {
+        Debug.Log("Onbattlestart");
+        if (_players[(int)type1 - 1].GetPlayerMode() == Player.PLAYERMODE.BATTLE || _players[(int)type2 - 1].GetPlayerMode() == Player.PLAYERMODE.BATTLE)
+        {
+            return;
+        }
+        _type1 = type2;
+        _type2 = type1;
+
+        Debug.Log("Onbattlestart（）");
+        StartCoroutine(DanceStartEvent());
+        
+        //バトル開始の処理
+       
+    }
+
+
 }

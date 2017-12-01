@@ -319,6 +319,7 @@ MonoBehaviour:
   _animator: {fileID: 60955481}
   _dance: {fileID: 871764280}
   _playerManager: {fileID: 594352205}
+  battlegauge: 0
 --- !u!95 &60955481 stripped
 Animator:
   m_PrefabParentObject: {fileID: 9500000, guid: fe5e0906a210d7c4d9836be0563cdcce,
@@ -450,6 +451,7 @@ MonoBehaviour:
   _danceUI: {fileID: 2093537535}
   _danceFloor: {fileID: 819372702}
   _cameramanager: {fileID: 0}
+  playermanager: {fileID: 594352205}
 --- !u!1 &152324104
 GameObject:
   m_ObjectHideFlags: 3
@@ -496,7 +498,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Path: {fileID: 1212764459}
-  m_PathPosition: 0.0615871
+  m_PathPosition: 0.827947
   m_PathOffset: {x: 0, y: 0, z: 0}
   m_XDamping: 0
   m_YDamping: 0
@@ -811,6 +813,7 @@ MonoBehaviour:
   _animator: {fileID: 221819148}
   _dance: {fileID: 134893255}
   _playerManager: {fileID: 594352205}
+  battlegauge: 0
 --- !u!95 &221819148 stripped
 Animator:
   m_PrefabParentObject: {fileID: 95711890678322932, guid: 5b5719f82e355574e8d20573e708aa23,
@@ -1021,6 +1024,7 @@ MonoBehaviour:
   _danceUI: {fileID: 272933900}
   _danceFloor: {fileID: 1831228411}
   _cameramanager: {fileID: 0}
+  playermanager: {fileID: 594352205}
 --- !u!135 &421753086
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1657,6 +1661,7 @@ MonoBehaviour:
   _danceUI: {fileID: 1618664262}
   _danceFloor: {fileID: 1064704210}
   _cameramanager: {fileID: 0}
+  playermanager: {fileID: 594352205}
 --- !u!1 &642969528
 GameObject:
   m_ObjectHideFlags: 0
@@ -1877,6 +1882,7 @@ MonoBehaviour:
   _danceUI: {fileID: 1313955946}
   _danceFloor: {fileID: 1795913482}
   _cameramanager: {fileID: 2070828094}
+  playermanager: {fileID: 594352205}
 --- !u!114 &874938364 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114683781947072126, guid: 50ee9786478764d40b0545742d364998,
@@ -2003,8 +2009,8 @@ Transform:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 883001440}
-  m_LocalRotation: {x: 0.0010643321, y: 0.87291646, z: 0.0019043656, w: -0.48786485}
-  m_LocalPosition: {x: -443.25565, y: 2.2808185, z: -145.69653}
+  m_LocalRotation: {x: 0.0023663973, y: 0.6732723, z: -0.002154796, w: 0.73938775}
+  m_LocalPosition: {x: -452.61264, y: 2.3360844, z: -148.52652}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 152324105}
@@ -2032,7 +2038,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   velocity: 1
-  currentDistance: 1.50554
+  currentDistance: 12.39849
 --- !u!114 &883001443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3094,6 +3100,7 @@ MonoBehaviour:
   _animator: {fileID: 1334522314}
   _dance: {fileID: 618399137}
   _playerManager: {fileID: 594352205}
+  battlegauge: 0
 --- !u!54 &1334522313
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3699,7 +3706,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1647451729298192, guid: 5b5719f82e355574e8d20573e708aa23, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5b5719f82e355574e8d20573e708aa23, type: 2}
@@ -3738,6 +3745,7 @@ MonoBehaviour:
   _animator: {fileID: 1612624959}
   _dance: {fileID: 421753085}
   _playerManager: {fileID: 594352205}
+  battlegauge: 0
 --- !u!135 &1612624962
 SphereCollider:
   m_ObjectHideFlags: 0

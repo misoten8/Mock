@@ -94,6 +94,13 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	private float[] _requestTime = new float[PlayerManager.REQUEST_COUNT];
 
+    /// <summary>
+    /// バトル相手のプレイヤー保存用
+    /// </summary>
+    private Player battletarget;
+    [SerializeField]
+    private PlayerManager playermanager;
+
 	private void Start()
 	{
 		_danceCollider.enabled = true;
@@ -101,6 +108,7 @@ public class Dance : MonoBehaviour
 		_dancePoint = 0;
 
 		_wmNum = (int)_player.Type - 1;
+  
 	}
 
 
@@ -110,13 +118,23 @@ public class Dance : MonoBehaviour
         if (other.tag != "DanceRange")
             return;
         Debug.Log("ダンスバトル開始");
+
+        battletarget = other.gameObject.GetComponent<Dance>().Player;
+
+        //プレイヤーのモードをバトルに
+        if (Player.GetPlayerMode() == Player.PLAYERMODE.MOVE)
+        {     
+            playermanager.OnBattleStart(Player.Type, battletarget.Type);
+            Player.SetPlayerMode(Player.PLAYERMODE.BATTLE);
+        }
+
+        
     }
     //離れた時
     private void OnTriggerExit(Collider other)
     {
         if (other.tag != "DanceRange")
             return;
-        Debug.Log("ダンスバトル終了");
     }
 
 

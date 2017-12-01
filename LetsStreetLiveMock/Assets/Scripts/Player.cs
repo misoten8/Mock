@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
         NORMAL,
         MOVE,
         STAMINAOUT,
+        BATTLE,
         END
     };
 
@@ -59,9 +60,19 @@ public class Player : MonoBehaviour
     //移動ゲージ
     private int gauge;
 
+    //バトル
+    public int battlegauge;
+
     //ゲージ減少する時間
     private const int REDUCTION_TIME = 1;//モードを変える時間
     private float changetime;   //動きを更新する時刻
+
+    //バトルモード
+    private const int BATTLE_TIME = 5;//モードを変える時間
+
+    //移動モード
+    private const int START_TIME = 10;
+    private const int END_TIME = -1;//モードを変える時間
 
     //プレイヤーモード
     private PLAYERMODE mode;
@@ -81,29 +92,33 @@ public class Player : MonoBehaviour
 
         //ゲージ初期化
         gauge = 0;
-
+        battlegauge = 0;
         //プレイヤーモード初期化
         mode = PLAYERMODE.NORMAL;
 	}
 
 	void Update()
 	{
-        //=====================================
-        //Wiiリモコンを振って数値を10にする
-        //=====================================
+        //=======================================================
+        //待機モード（Wiiリモコンを振って数値を10にする）
+        //=======================================================
         if (mode == PLAYERMODE.NORMAL)
         {
             if (Input.GetKeyDown("return") || WiimoteManager.GetSwing(_wmNum))
             {
                 gauge++;
+                if (gauge >= START_TIME)
+                {
+                    mode = PLAYERMODE.MOVE;
+                }
             }
         }
 
-        if (mode == PLAYERMODE.MOVE)
+        if (mode == PLAYERMODE.MOVE )
         {
-            //=====================================
-            //数値が０の時移動できなくする（０になるまで移動できる）
-            //=====================================
+            //=============================================================================
+            //ムーブモード(数値が０の時移動できなくする（０になるまで移動できる）
+            //=============================================================================
             if (Input.GetKey("up") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_RIGHT))
                 _rb.AddForce(transform.forward * _power);
             if (Input.GetKey("left") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_UP))
@@ -113,32 +128,43 @@ public class Player : MonoBehaviour
             if (Input.GetKey("down") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_LEFT))
                 _rb.AddForce(-transform.forward * _power);
 
-
             //=====================================
             //時間経過で数値が０になるようにする
             //=====================================
             if (changetime < Time.time)
             {
-                gauge--;                                 //ゲージ減少
+                gauge--;                                  //ゲージ減少
                 changetime = Time.time + REDUCTION_TIME;  //次の更新時刻を決める
+                if (gauge <= END_TIME)
+                {
+                    mode = PLAYERMODE.NORMAL;
+                }
+
             }
         }
-
-        if (gauge >= 10)
+        //=============================================================================
+        //バトルモード
+        //=============================================================================
+        if (mode == PLAYERMODE.BATTLE )
         {
-            mode = PLAYERMODE.MOVE;
-        }
-        else if (gauge < 0)
-        {
-            mode = PLAYERMODE.NORMAL;
-        }
+                if (Input.GetKeyDown("return") || WiimoteManager.GetSwing(_wmNum))
+                {
+                    battlegauge++;
+                }
 
+        }
 
 
     }
     private void OnGUI()
     {
-        GUI.Label(new Rect(new Vector2(0, 12), new Vector2(300, 200)), "SUTAMINA : " + gauge.ToString());
+        if (_wmNum == 0)
+        {
+            GUI.Label(new Rect(new Vector2(0, 12), new Vector2(300, 200)), "SUTAMINA : " + gauge.ToString());
+            GUI.Label(new Rect(new Vector2(0, 24), new Vector2(300, 200)), "MODE     : " + mode.ToString());
+
+
+        }
     }
 
     void OnApplicationQuit()
@@ -157,6 +183,27 @@ public class Player : MonoBehaviour
     {
         return mode;
     }
+    public void SetPlayerMode(PLAYERMODE setmode)
+    {
+        mode = setmode;
+    }
+    //バトルが終わった時にする処理
+    public void OnBattleEnd(bool iswin)
+    {
+        Debug.Log("onbattleend");
+        //勝ってた場合
+        if (iswin == true)
+        {
+            
+            mode = PLAYERMODE.MOVE;
+            return;
+        }
+        else
+        {
+            mode = PLAYERMODE.MOVE;
+            gauge = 0;
+        }
+    }
 
-    
+
 }
