@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+// TODO:ルームを一つにして、一番早いユーザーをオーナーにする
 public class PUNController : Photon.MonoBehaviour
 {
 	// 現在のステート表示用テキスト  

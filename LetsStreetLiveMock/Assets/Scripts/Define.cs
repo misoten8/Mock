@@ -5,7 +5,7 @@ using UnityEngine;
 public static class Define
 {
 	/// <summary>
-	/// プレイヤーの人数
+	/// プレイヤーの人数(実況も含む)
 	/// </summary>
 	public const int PLAYER_NUM_MAX = 4;
 
@@ -47,6 +47,15 @@ public static class Define
 	};
 
 	/// <summary>
+	/// PhotonNetworkに設定するカスタムプロパティ
+	/// </summary>
+	public static readonly ExitGames.Client.Photon.Hashtable defaultPropaties = new ExitGames.Client.Photon.Hashtable
+	{
+		{ "IsLobbySceneLoaded", false },
+		{ "IsBattleSceneLoaded", false },
+	};
+
+	/// <summary>
 	/// ファン化難易度
 	/// </summary>
 	public enum FanLevel
@@ -81,6 +90,10 @@ public static class Define
 		/// <summary>
 		/// Player4
 		/// </summary>
-		Fourth
+		Fourth,
+		/// <summary>
+		/// 実況
+		/// </summary>
+		Camera
 	}
 }

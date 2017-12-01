@@ -49,9 +49,6 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public event Action<bool, bool> onEndDance;
 
-	[SerializeField]
-	private Camera _camera;
-
 	/// <summary>
 	/// ダンスの効果範囲の当たり判定
 	/// </summary>
@@ -136,7 +133,6 @@ public class Dance : MonoBehaviour
 		_isTransing = false;
 		_isSuccess = false;
 		_dancePoint = 0;
-		SetCamera(true);
 		_danceUI.Active();
 		_danceFloor.enabled = true;
 		_isPlaing = true;
@@ -161,7 +157,6 @@ public class Dance : MonoBehaviour
 			{
 				_isTransing = false;
 				_danceUI.NotActive();
-				SetCamera(false);
 				_danceFloor.enabled = false;
 				// スコアを設定する
 				_dancePoint = 0;
@@ -182,26 +177,11 @@ public class Dance : MonoBehaviour
 		_isPlaing = false;
 		_isTransing = false;
 		_danceUI.NotActive();
-		SetCamera(false);
 		_danceFloor.enabled = false;
 		// スコアを設定する
 		_dancePoint = 0;
 		_cameramanager?.ChangeCameraMode();
 		StopCoroutine("StepDo");
-	}
-
-	/// <summary>
-	/// カメラ動作制御
-	/// カメラの位置、向きを設定する
-	/// </summary>
-	private void SetCamera(bool isPlay)
-	{
-		Transform camera = _camera.gameObject.transform;
-		Vector3
-			localPos = camera.localPosition,
-			localAngle = camera.localEulerAngles;
-		camera.localPosition = new Vector3(localPos.x, localPos.y, isPlay ? 2.0f : -2.0f);
-		camera.localEulerAngles = new Vector3(localAngle.x, isPlay ? 180.0f : 0.0f, localAngle.z);
 	}
 
 	private void ChangeFanPoint(int addValue)

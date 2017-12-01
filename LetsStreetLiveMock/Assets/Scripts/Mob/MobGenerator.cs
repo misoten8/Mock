@@ -8,7 +8,7 @@ using System.Linq;
 /// モブキャラ生成 クラス
 /// 製作者：実川
 /// </summary>
-public class MobGenerator : MonoBehaviour
+public class MobGenerator : Photon.MonoBehaviour
 {
 	/// <summary>
 	/// モブ管理クラス
@@ -73,6 +73,7 @@ public class MobGenerator : MonoBehaviour
 
 	public void CreateStart()
 	{
+		//if(photonView.ownerId == )
 		StartCoroutine(Enumerator());
 	}
 

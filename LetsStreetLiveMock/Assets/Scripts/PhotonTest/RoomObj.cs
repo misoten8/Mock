@@ -48,7 +48,7 @@ public class RoomObj : MonoBehaviour
 		roomOptions.IsOpen = true;     // 部屋を開くか  
 		roomOptions.IsVisible = true;  // 一覧に表示するか  
 		roomOptions.MaxPlayers = 2;    // 最大参加人数  
-
+		//PhotonNetwork.JoinRoom("Battle Room");
 		// 部屋に参加、存在しない時作成して参加  
 		PhotonNetwork.JoinOrCreateRoom(_name.text, roomOptions, new TypedLobby());
 	}

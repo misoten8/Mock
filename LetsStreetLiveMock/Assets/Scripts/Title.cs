@@ -26,6 +26,6 @@ public class Title : MonoBehaviour
 
 	public void TransScene()
 	{
-		SceneManager.LoadScene("Menu");
+		SceneManager.LoadScene("Lobby");
 	}
 }
