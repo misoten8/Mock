@@ -61,21 +61,17 @@ public class MobManager : Photon.MonoBehaviour
 		{
 			if (_followChangeStackType.Count > 0)
 			{
-				photonView.RPC("FollowChangeStack", PhotonTargets.AllViaServer, _followChangeStackType.ToArray(), _followChangeStackID.ToArray());
+				Debug.Log(_followChangeStackType.Count.ToString() + "人のモブの追従変更情報が送信されるドン！");
+				photonView.RPC("SendFollowChanges", PhotonTargets.AllViaServer, _followChangeStackType.ToArray(), _followChangeStackID.ToArray());
 				_followChangeStackType.Clear();
 				_followChangeStackID.Clear();
 			}
 			return;
 		}
 
-		_score.SetScore(Define.PlayerType.First, _mobs.Where(e => e.FunType == Define.PlayerType.First).Count());
-		_score.SetScore(Define.PlayerType.Second, _mobs.Where(e => e.FunType == Define.PlayerType.Second).Count());
-		_score.SetScore(Define.PlayerType.Third, _mobs.Where(e => e.FunType == Define.PlayerType.Third).Count());
-		_score.SetScore(Define.PlayerType.Fourth, _mobs.Where(e => e.FunType == Define.PlayerType.Fourth).Count());
-		_isScoreChange = false;
-
 		if (_fanChangeStackType.Count > 0)
 		{
+			Debug.Log(_fanChangeStackType.Count.ToString() + "人のモブのファン変更情報が送信されるドン！");
 			photonView.RPC("SendFanChanges", PhotonTargets.AllViaServer, _fanChangeStackType.ToArray(), _fanChangeStackID.ToArray());
 			_fanChangeStackType.Clear();
 			_fanChangeStackID.Clear();
@@ -132,6 +128,12 @@ public class MobManager : Photon.MonoBehaviour
 		{
 			_mobs.First(e => e.photonView.viewID == photonViewIDs[i]).SetFunType(fanTargets[i]);
 		}
+
+		_score.SetScore(Define.PlayerType.First, _mobs.Where(e => e.FunType == Define.PlayerType.First).Count());
+		_score.SetScore(Define.PlayerType.Second, _mobs.Where(e => e.FunType == Define.PlayerType.Second).Count());
+		_score.SetScore(Define.PlayerType.Third, _mobs.Where(e => e.FunType == Define.PlayerType.Third).Count());
+		_score.SetScore(Define.PlayerType.Fourth, _mobs.Where(e => e.FunType == Define.PlayerType.Fourth).Count());
+		_isScoreChange = false;
 	}
 
 	/// <summary>
@@ -146,7 +148,7 @@ public class MobManager : Photon.MonoBehaviour
 		int max = followTargets.Count();
 		for (int i = 0; i < max; i++)
 		{
-			_mobs.First(e => e.photonView.viewID == photonViewIDs[i]).SetFunType(followTargets[i]);
+			_mobs.First(e => e.photonView.viewID == photonViewIDs[i]).SetFollowType(followTargets[i]);
 		}
 	}
 

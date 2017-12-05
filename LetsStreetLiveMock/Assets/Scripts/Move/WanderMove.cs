@@ -37,9 +37,6 @@ public class WanderMove : MonoBehaviour, IMove
 
 	private Action _onTrans;
 
-	[SerializeField]
-	private Rigidbody _rb;
-
 	/// <summary>
 	/// 移動する速度
 	/// </summary>

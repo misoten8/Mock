@@ -113,6 +113,10 @@ public class Mob : Photon.PunBehaviour
 	/// </summary>
 	private bool _isViewingInDance;
 
+	/// <summary>
+	/// 追従変更処理が実行されたかどうか
+	/// </summary>
+	private bool _isPlayChangeFollowTraget = true;
 
 	/// <summary>
 	/// PhotonNetwork.Instantiate によって GameObject(とその子供)が生成された際に呼び出されます。
@@ -159,7 +163,6 @@ public class Mob : Photon.PunBehaviour
 		// プレイヤーがダンス中であれば、視聴する
 		if (playerDance.IsPlaying)
 		{
-			Debug.Log(photonView.viewID.ToString() + "番のモブは視聴するドン！");
 			// モブ停止イベント実行
 			onDanceWatchMob?.Invoke();
 
@@ -180,11 +183,21 @@ public class Mob : Photon.PunBehaviour
 
 					// ファンタイプが変更したかチェックする
 					Define.PlayerType newFunType = isSuccess ? playerDance.Player.Type : Define.PlayerType.None;
-					SetFunType(newFunType);
+					_mobManager.FanChangeStack(newFunType, photonView.viewID);
 				}
-
-				// プレイヤーが客引き状態の場合、追従判定を行う
-				SetFollowType(playerDance.PlayerType);
+				else
+				{
+					// プレイヤーが客引き状態の場合、追従判定を行う
+					if (_mobManager.GetFunCount(_fllowTarget) < _mobManager.GetFunCount(playerDance.PlayerType)
+					|| _fllowTarget == Define.PlayerType.None)
+					{
+						if (FunType == Define.PlayerType.None)
+						{
+							_mobManager.FollowChangeStack(playerDance.PlayerType, photonView.viewID);
+							_isPlayChangeFollowTraget = false;
+						}
+					}
+				}
 
 				// モブ再生イベント実行
 				onMoveMob?.Invoke();
@@ -194,8 +207,19 @@ public class Mob : Photon.PunBehaviour
 		}
 		else
 		{
-			// プレイヤーが客引き状態の場合、追従判定を行う
-			SetFollowType(playerDance.PlayerType);
+			if (_isPlayChangeFollowTraget)
+			{
+				// プレイヤーが客引き状態の場合、追従判定を行う
+				if (_mobManager.GetFunCount(_fllowTarget) < _mobManager.GetFunCount(playerDance.PlayerType)
+				|| _fllowTarget == Define.PlayerType.None)
+				{
+					if (FunType == Define.PlayerType.None)
+					{
+						_mobManager.FollowChangeStack(playerDance.PlayerType, photonView.viewID);
+						_isPlayChangeFollowTraget = false;
+					}
+				}
+			}
 		}
 	}
 
@@ -214,19 +238,17 @@ public class Mob : Photon.PunBehaviour
 
 			// アウトラインの更新
 			_meshRenderer.materials[1].color = Define.playerColor[(int)type];
+
+			// モブ移動動作の変更
+			onChangeFllowPlayer?.Invoke();
 		}
 	}
 
 	public void SetFollowType(Define.PlayerType type)
 	{
-		if (_mobManager.GetFunCount(_fllowTarget) < _mobManager.GetFunCount(type)
-				|| _fllowTarget == Define.PlayerType.None)
-		{
-			if (FunType != Define.PlayerType.None)
-				return;
-			_fllowTarget = type;
-			onChangeFllowPlayer?.Invoke();
-		}
+		_fllowTarget = type;
+		onChangeFllowPlayer?.Invoke();
+		_isPlayChangeFollowTraget = true;
 	}
 
 	/// <summary>

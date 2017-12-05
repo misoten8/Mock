@@ -43,9 +43,6 @@ public class Player : Photon.PunBehaviour
 
 	private cameramanager _cameramanager;
 
-	// wiiリモコン
-	private int _wmNum;
-
 	/// <summary>
 	/// PhotonNetwork.Instantiate によって GameObject(とその子供)が生成された際に呼び出されます。
 	/// </summary>
@@ -60,16 +57,18 @@ public class Player : Photon.PunBehaviour
 		_mobManager = caches.mobManager;
 		_cameramanager = caches.cameramanager;
 
-		// プレイヤーを登録
+		// プレイヤーを管理クラスに登録
 		_playerManager.SetPlayer(this);
-		
+
+		_type = (Define.PlayerType)(int)photonView.instantiationData[0];
+		_playerColor = Define.playerColor[(int)_type];
+		_dance.OnAwake();
+
+		// プレイヤー自身だけに実行される処理
 		if ((int)photonView.instantiationData[0] == PhotonNetwork.player.ID)
 		{
-			_type = (Define.PlayerType)(int)photonView.instantiationData[0];
-			_playerColor = Define.playerColor[(int)_type];
 			_cameramanager.SetFollowTarget(transform);
 			_cameramanager.SetLookAtTarget(transform);
-			_dance.OnAwake();
 		}
 	}
 
@@ -80,20 +79,20 @@ public class Player : Photon.PunBehaviour
 
 		if (!_dance.IsPlaying)
 		{
-			if (Input.GetKey("up") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_RIGHT))
+			if (Input.GetKey("up") || WiimoteManager.GetButton(0, ButtonData.WMBUTTON_RIGHT))
 				_rb.AddForce(transform.forward * _power);
-			if (Input.GetKey("left") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_UP))
+			if (Input.GetKey("left") || WiimoteManager.GetButton(0, ButtonData.WMBUTTON_UP))
 				transform.Rotate(Vector3.up, -_rotatePower);
-			if (Input.GetKey("right") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_DOWN))
+			if (Input.GetKey("right") || WiimoteManager.GetButton(0, ButtonData.WMBUTTON_DOWN))
 				transform.Rotate(Vector3.up, _rotatePower);
-			if (Input.GetKey("down") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_LEFT))
+			if (Input.GetKey("down") || WiimoteManager.GetButton(0, ButtonData.WMBUTTON_LEFT))
 				_rb.AddForce(-transform.forward * _power);
-			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_TWO))
+			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(0, ButtonData.WMBUTTON_TWO))
 				photonView.RPC("DanceBegin", PhotonTargets.AllViaServer);
 		}
 		else
 		{
-			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_ONE))
+			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(0, ButtonData.WMBUTTON_ONE))
 				photonView.RPC("DanceCancel", PhotonTargets.AllViaServer);
 		}
 
@@ -107,6 +106,9 @@ public class Player : Photon.PunBehaviour
 	[PunRPC]
 	public void DanceBegin()
 	{
+		if (!photonView.isMine)
+			return;
+
 		_dance.Begin();
 	}
 
@@ -116,6 +118,9 @@ public class Player : Photon.PunBehaviour
 	[PunRPC]
 	public void DanceCancel()
 	{
+		if (!photonView.isMine)
+			return;
+
 		_dance.Cancel();
 	}
 

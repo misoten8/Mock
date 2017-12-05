@@ -23,7 +23,6 @@ GameObject:
   - component: {fileID: 23139675985354190}
   - component: {fileID: 135505166505465452}
   - component: {fileID: 114248920631976908}
-  - component: {fileID: 54049106572582298}
   - component: {fileID: 114050216218602054}
   - component: {fileID: 114124700771963632}
   - component: {fileID: 114818292167235918}
@@ -117,21 +116,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1133852973740148}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!54 &54049106572582298
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1133852973740148}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 116
-  m_CollisionDetection: 0
 --- !u!114 &114050216218602054
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -146,7 +130,6 @@ MonoBehaviour:
   _mob: {fileID: 114248920631976908}
   _followMove: {fileID: 114124700771963632}
   _wanderMove: {fileID: 114818292167235918}
-  _rigidbody: {fileID: 54049106572582298}
 --- !u!114 &114124700771963632
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -213,7 +196,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7762242beae68154995f5ab18273c806, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rb: {fileID: 54049106572582298}
   _velocity: 0.05
   _maxVelocity: 2
 --- !u!135 &135505166505465452

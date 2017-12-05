@@ -16,9 +16,6 @@ public class MobController : MonoBehaviour
 	[SerializeField]
 	private WanderMove _wanderMove;
 
-	[SerializeField]
-	private Rigidbody _rigidbody;
-
 	/// <summary>
 	/// 現在の移動処理
 	/// </summary>
@@ -31,19 +28,16 @@ public class MobController : MonoBehaviour
 		{
 			if (_mob.FllowTarget == Define.PlayerType.None)
 			{
-				Debug.Log(_mob.photonView.viewID.ToString() + "番のモブは徘徊するドン！");
 				_wanderMove.OnStart();
 			}
 			else
 			{
 				if (_mob.FunType == Define.PlayerType.None)
 				{
-					Debug.Log(_mob.photonView.viewID.ToString() + "番のモブは" + _mob.FllowTarget.ToString() + "の人の群れに付いていくドン！");
 					_followMove.OnStart(_mob.PlayerManager.GetPlayer(_mob.FllowTarget).transform);
 				}
 				else
 				{
-					Debug.Log(_mob.photonView.viewID.ToString() + "番のモブは" + _mob.funPlayer.ToString() + "に付いていくドン！");
 					_followMove.OnStart(_mob.funPlayer.transform);
 				}
 				_wanderMove.enabled = false;
@@ -55,7 +49,6 @@ public class MobController : MonoBehaviour
 		{
 			_followMove.enabled = false;
 			_wanderMove.enabled = false;
-			_rigidbody.velocity = new Vector3();
 		};
 
 		// 追従対象プレイヤー変更イベント
