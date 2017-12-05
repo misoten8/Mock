@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -7,7 +8,7 @@ using UnityEngine;
 /// プレイヤー全体に対するイベント等の発信や、変数の保管等を行う
 /// 製作者：実川
 /// </summary>
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : Photon.MonoBehaviour
 {
 	/// <summary>
 	/// ダンス時間
@@ -24,46 +25,27 @@ public class PlayerManager : MonoBehaviour
 	/// </summary>
 	public const int REQUEST_COUNT = 3;
 
-	// プレイヤーのスコアが取得できるようにする
-
 	/// <summary>
-	/// ダンス開始実行イベント
+	/// プレイヤーキャッシュリスト
 	/// </summary>
-	public event Action onDanceStart;
-
-	/// <summary>
-	/// 現在がダンスモードかどうか
-	/// </summary>
-	public bool IsDanceMode
+	public List<Player> Players
 	{
-		get { return _isDanceMode; }
+		get { return _players; }
 	}
 
-	private bool _isDanceMode = false;
+	private List<Player> _players = new List<Player>();
 
 	/// <summary>
-	/// プレイヤーキャッシュ配列
-	/// いずれプレイヤーを動的生成する仕組みに変更するため、一時措置
+	/// プレイヤーを追加する
 	/// </summary>
-	[SerializeField]
-	private Player[] _players;
+	public void SetPlayer(Player addPlayer)
+	{
+		_players.Add(addPlayer);
+	}
 
 	/// <summary>
-	/// バトル再生状態かどうか
+	/// プレイヤーを取得する
 	/// </summary>
-	private bool _isBattleActive = true;
-
-	private void Awake()
-	{
-		_isBattleActive = true;
-		//StartCoroutine("DanceStartEvent");
-	}
-
-	private void OnDisable()
-	{
-		_isBattleActive = false;
-	}
-
 	public Player GetPlayer(Define.PlayerType playerType)
 	{
 		if (playerType == Define.PlayerType.None)
@@ -73,27 +55,7 @@ public class PlayerManager : MonoBehaviour
 	}
 
 	/// <summary>
-	/// ダンス開始処理
+	/// 定義のみ
 	/// </summary>
-	private IEnumerator DanceStartEvent()
-	{
-		do
-		{
-			yield return new WaitForSeconds(DANCE_START_INTERVAL);
-
-			_isDanceMode = true;
-
-			// ダンス開始イベントを実行
-			onDanceStart?.Invoke();
-
-			yield return new WaitForSeconds(DANCE_TIME);
-
-			_isDanceMode = false;
-
-			// 全体通知イベントを実行する
-
-		} while (_isBattleActive);
-
-		yield return null;
-	}
+	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) { }
 }

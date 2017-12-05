@@ -61,7 +61,6 @@ public class Dance : MonoBehaviour
 	[SerializeField]
 	private MeshRenderer _danceFloor;
 
-	[SerializeField]
 	private cameramanager _cameramanager;
 
 	private int _dancePoint = 100;
@@ -81,19 +80,21 @@ public class Dance : MonoBehaviour
 	private bool _isPlaing = false;
 
 	// wiiリモコン
-	private Wiimote _wm;
 	private int _wmNum;
-
-
 
 	/// <summary>
 	/// 各リクエスト事の持続時間
 	/// </summary>
 	private float[] _requestTime = new float[PlayerManager.REQUEST_COUNT];
 
-	private void Start()
+	/// <summary>
+	/// playerに呼び出してもらう
+	/// </summary>
+	public void OnAwake()
 	{
+		_cameramanager = GameObject.Find("Cameras/cameramanager").GetComponent<cameramanager>();
 		_danceCollider.enabled = true;
+		_danceUI.OnAwake();
 		_danceUI.NotActive();
 		_dancePoint = 0;
 

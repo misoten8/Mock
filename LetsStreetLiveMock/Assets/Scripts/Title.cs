@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using WiimoteApi;
 
 /// <summary>
 /// Title クラス
@@ -11,7 +12,18 @@ public class Title : MonoBehaviour
 {
 	void Start()
 	{
-
+		// wiiリモコン初期化処理
+		WiimoteManager.FindWiimotes();
+		int wiiNumber = 0;
+		if (WiimoteManager.HasWiimote(wiiNumber))
+		{
+			Wiimote wm = WiimoteManager.Wiimotes[wiiNumber];
+			wm.InitWiiMotionPlus();
+			wm.Speaker.Init();
+			int i = wiiNumber + 1;
+			wm.SendPlayerLED(i == 1, i == 2, i == 3, i == 4);
+			WiimoteManager.Rumble(wiiNumber, false);
+		}
 	}
 
 	void Update()

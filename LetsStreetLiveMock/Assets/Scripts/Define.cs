@@ -47,13 +47,30 @@ public static class Define
 	};
 
 	/// <summary>
-	/// PhotonNetworkに設定するカスタムプロパティ
+	/// ルームカスタムプロパティ
 	/// </summary>
-	public static readonly ExitGames.Client.Photon.Hashtable defaultPropaties = new ExitGames.Client.Photon.Hashtable
+	/// <remarks>
+	/// 転送サイズの軽減やタイプミスを考慮して列挙型を定義
+	/// </remarks>
+	public enum RoomPropaties : byte
 	{
-		{ "IsLobbySceneLoaded", false },
-		{ "IsBattleSceneLoaded", false },
-	};
+		/// <summary>
+		/// nullを返します
+		/// </summary>
+		None = 0,
+		/// <summary>
+		/// ロビーシーンが読み込み完了したかどうか(bool)
+		/// </summary>
+		IsLobbySceneLoaded,
+		/// <summary>
+		/// ルームでのマッチングが完了し、バトルを開始できる状態かどうか(bool)
+		/// </summary>
+		RoomMatchingComplete,
+		/// <summary>
+		/// バトルシーンが読み込み完了したかどうか(bool)
+		/// </summary>
+		IsBattleSceneLoaded,
+	}
 
 	/// <summary>
 	/// ファン化難易度
@@ -96,4 +113,26 @@ public static class Define
 		/// </summary>
 		Camera
 	}
+
+	/// <summary>
+	/// ルーム作成時に設定されるカスタムプロパティ
+	/// </summary>
+	public static readonly ExitGames.Client.Photon.Hashtable defaultRoomPropaties = new ExitGames.Client.Photon.Hashtable
+	{
+		{ RoomPropaties.IsLobbySceneLoaded, false },
+		{ RoomPropaties.RoomMatchingComplete, false },
+		{ RoomPropaties.IsBattleSceneLoaded, false },
+	};
+
+	/// <summary>
+	/// プレイヤーの色
+	/// </summary>
+	public static readonly Color[] playerColor = new Color[]
+	{
+		Color.gray,
+		Color.red,
+		Color.blue,
+		Color.green,
+		Color.yellow
+	};
 }

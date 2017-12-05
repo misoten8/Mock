@@ -10,11 +10,23 @@ public class DanceUI : MonoBehaviour
 	private MeshRenderer _mesh;
 
 	[SerializeField]
+	private TextMesh _textMesh;
+
+	[SerializeField]
+	private Player _player;
+
 	private DisplayMediator _dm;
 
-	private void Start()
+	/// <summary>
+	/// Danceに呼び出してもらう
+	/// </summary>
+	public void OnAwake()
 	{
+		_dm = GameObject.Find("Canvas/Display").GetComponent<DisplayMediator>();
+
 		_mesh.enabled = true;
+		_textMesh.color = Define.playerColor[(int)_player.Type];
+		_textMesh.text = ((int)_player.Type).ToString() + "P";
 		_dm.DanceSuccess.enabled = false;
 		_dm.DanceFailure.enabled = false;
 		_dm.DancePoint.enabled = false;

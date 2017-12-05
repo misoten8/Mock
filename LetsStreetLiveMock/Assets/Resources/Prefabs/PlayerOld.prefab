@@ -234,8 +234,9 @@ GameObject:
   - component: {fileID: 54107612482886678}
   - component: {fileID: 135777174557237830}
   - component: {fileID: 114226708248168704}
+  - component: {fileID: 114179554784393842}
   m_Layer: 0
-  m_Name: Player
+  m_Name: PlayerOld
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2005,7 +2006,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1262640142341874}
-  m_LocalRotation: {x: -0.0059114387, y: -0.67944837, z: 0.7336993, w: -0.00066563475}
+  m_LocalRotation: {x: -0.005911438, y: -0.67944837, z: 0.7336993, w: -0.00066563475}
   m_LocalPosition: {x: -0.14276123, y: 0.032653574, z: 0.13977996}
   m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 1.0000001}
   m_Children: []
@@ -3287,6 +3288,71 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4278190335
+--- !u!114 &114179554784393842
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1172599094296838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PositionModel:
+    SynchronizeEnabled: 1
+    TeleportEnabled: 1
+    TeleportIfDistanceGreaterThan: 3
+    InterpolateOption: 2
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 1
+    InterpolateMoveTowardsAcceleration: 2
+    InterpolateMoveTowardsDeceleration: 2
+    InterpolateSpeedCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: -1
+        value: 0
+        inSlope: 0
+        outSlope: Infinity
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 4
+        value: 4
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    ExtrapolateOption: 0
+    ExtrapolateSpeed: 1
+    ExtrapolateIncludingRoundTripTime: 1
+    ExtrapolateNumberOfStoredPositions: 1
+    DrawErrorGizmo: 1
+  m_RotationModel:
+    SynchronizeEnabled: 1
+    InterpolateOption: 1
+    InterpolateRotateTowardsSpeed: 180
+    InterpolateLerpSpeed: 5
+  m_ScaleModel:
+    SynchronizeEnabled: 0
+    InterpolateOption: 0
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 0
 --- !u!114 &114226708248168704
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3305,7 +3371,7 @@ MonoBehaviour:
   synchronization: 0
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
-  ownershipTransfer: 0
+  ownershipTransfer: 2
   ObservedComponents:
   - {fileID: 0}
   ObservedComponentsFoldoutOpen: 1
@@ -3336,11 +3402,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4d26f321cf796a4daf39c05eedd1474, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _player: {fileID: 0}
+  _player: {fileID: 114595776221986864}
   _danceCollider: {fileID: 135265694904257540}
   _danceUI: {fileID: 114383989756174182}
   _danceFloor: {fileID: 23994947851310572}
-  _cameramanager: {fileID: 0}
 --- !u!114 &114315468716465384
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3352,10 +3417,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96d62764feb734a3ab3d730bc3718e9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spectrum1: {fileID: 0}
-  spectrum2: {fileID: 0}
-  spectrum3: {fileID: 0}
-  spectrum4: {fileID: 0}
   spectrum: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &114383989756174182
 MonoBehaviour:
@@ -3369,7 +3430,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mesh: {fileID: 23097752963630146}
-  _dm: {fileID: 0}
 --- !u!114 &114595776221986864
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3381,14 +3441,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71545632ca470d24f9b96c856d7c929a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerColor: {r: 1, g: 1, b: 1, a: 1}
-  _type: 1
   _rb: {fileID: 54107612482886678}
   _power: 400
   _rotatePower: 6
   _animator: {fileID: 95445619950246604}
   _dance: {fileID: 114276450215234356}
-  _playerManager: {fileID: 0}
 --- !u!114 &114682097143439412
 MonoBehaviour:
   m_ObjectHideFlags: 1

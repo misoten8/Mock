@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 114766974231680274}
   - component: {fileID: 114530930771725634}
   - component: {fileID: 114783742172560974}
+  - component: {fileID: 114094976133074562}
   m_Layer: 0
   m_Name: HardMob
   m_TagString: Mob
@@ -131,6 +132,32 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
+--- !u!114 &114094976133074562
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1750030278906678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownerId: 0
+  group: 0
+  OwnerShipWasTransfered: 0
+  prefixBackup: -1
+  synchronization: 3
+  onSerializeTransformOption: 3
+  onSerializeRigidBodyOption: 2
+  ownershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 114378701927149390}
+  ObservedComponentsFoldoutOpen: 1
+  viewIdField: 0
+  instantiationId: -1
+  currentMasterID: -1
+  isRuntimeInstantiated: 0
 --- !u!114 &114378701927149390
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -142,6 +169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7527f532dedceaf4395552c0dd43a7a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _funType: 0
   _fanLevel: 2
   _mobController: {fileID: 114766974231680274}
   _meshRenderer: {fileID: 23220301910723970}

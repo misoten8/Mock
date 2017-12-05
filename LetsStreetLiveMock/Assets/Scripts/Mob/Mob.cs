@@ -3,11 +3,12 @@ using UnityEngine;
 using Misoten8Utility;
 using System;
 
+//TODO:モブキャラから管理クラスに変更処理をスタックする
 /// <summary>
 /// モブキャラ クラス
 /// 製作者：実川
 /// </summary>
-public class Mob : MonoBehaviour
+public class Mob : Photon.PunBehaviour
 {
 	/// <summary>
 	/// ファンポイント
@@ -92,7 +93,6 @@ public class Mob : MonoBehaviour
 
 	private PlayerManager _playerManager;
 
-
 	/// <summary>
 	/// 追従する対象プレイヤー
 	/// </summary>
@@ -102,16 +102,6 @@ public class Mob : MonoBehaviour
 	}
 
 	private Define.PlayerType _fllowTarget = Define.PlayerType.None;
-
-	/// <summary>
-	/// モブ生成番号
-	/// </summary>
-	public int InstanceID
-	{
-		get { return _instanceID; }
-	}
-
-	private int _instanceID;
 
 	/// <summary>
 	/// ダンス視聴中エフェクト
@@ -125,17 +115,20 @@ public class Mob : MonoBehaviour
 
 
 	/// <summary>
-	/// モブ生成時に呼ばれる
+	/// PhotonNetwork.Instantiate によって GameObject(とその子供)が生成された際に呼び出されます。
 	/// </summary>
-	public void OnAwake(MobGenerator.MobCaches mobCaches)
+	/// <remarks>
+	/// PhotonMessageInfoパラメータは「誰が」「いつ」作成したかを提供します。
+	/// (「いつ」は PhotonNetworking.time に基づきます。)
+	/// </remarks>
+	public override void OnPhotonInstantiate(PhotonMessageInfo info)
 	{
-		_mobManager = mobCaches.mobManager;
-		_playerManager = mobCaches.playerManager;
-		_instanceID = mobCaches.instanceID;
-	}
+		var cache = GameObject.Find("SystemObjects/BattleManager").GetComponent<MobGenerator>().Caches;
+		_mobManager = cache.mobManager;
+		_playerManager = cache.playerManager;
+		// モブを登録
+		_mobManager.SetMob(this);
 
-	private void Start()
-	{
 		// 無所属に全てのファンポイントを設定
 		_fanPointArray[0] = Define.FanPointArray[(int)_fanLevel];
 
@@ -151,6 +144,9 @@ public class Mob : MonoBehaviour
 
 	private void OnTriggerStay(Collider other)
 	{
+		if (!photonView.isMine)
+			return;
+
 		if (other.tag != "DanceRange")
 			return;
 
@@ -163,7 +159,7 @@ public class Mob : MonoBehaviour
 		// プレイヤーがダンス中であれば、視聴する
 		if (playerDance.IsPlaying)
 		{
-			Debug.Log(_instanceID.ToString() + "番のモブは視聴するドン！");
+			Debug.Log(photonView.viewID.ToString() + "番のモブは視聴するドン！");
 			// モブ停止イベント実行
 			onDanceWatchMob?.Invoke();
 
@@ -184,32 +180,11 @@ public class Mob : MonoBehaviour
 
 					// ファンタイプが変更したかチェックする
 					Define.PlayerType newFunType = isSuccess ? playerDance.Player.Type : Define.PlayerType.None;
-					if (_funType != newFunType)
-					{
-						// ファンタイプの更新
-						_funType = newFunType;
-
-						// 推しているプレイヤーの更新
-						_funPlayer = playerDance.Player;
-
-						// 追従対象の更新
-						_fllowTarget = playerDance.PlayerType;
-
-						// アウトラインの更新
-						_meshRenderer.materials[1].color = playerDance.Player.PlayerColor;
-					}
+					SetFunType(newFunType);
 				}
 
 				// プレイヤーが客引き状態の場合、追従判定を行う
-				if (_mobManager.GetFunCount(_fllowTarget) < _mobManager.GetFunCount(playerDance.PlayerType)
-						|| _fllowTarget == Define.PlayerType.None)
-				{
-					if (FunType == Define.PlayerType.None)
-					{
-						// 追従対象の更新
-						_fllowTarget = playerDance.PlayerType;
-					}
-				}
+				SetFollowType(playerDance.PlayerType);
 
 				// モブ再生イベント実行
 				onMoveMob?.Invoke();
@@ -220,14 +195,42 @@ public class Mob : MonoBehaviour
 		else
 		{
 			// プレイヤーが客引き状態の場合、追従判定を行う
-			if (_mobManager.GetFunCount(_fllowTarget) < _mobManager.GetFunCount(playerDance.PlayerType)
-				|| _fllowTarget == Define.PlayerType.None)
-			{
-				if (FunType != Define.PlayerType.None)
-					return;
-				_fllowTarget = playerDance.PlayerType;
-				onChangeFllowPlayer?.Invoke();
-			}
+			SetFollowType(playerDance.PlayerType);
 		}
 	}
+
+	public void SetFunType(Define.PlayerType type)
+	{
+		if (_funType != type)
+		{
+			// ファンタイプの更新
+			_funType = type;
+
+			// 推しているプレイヤーの更新
+			_funPlayer = PlayerManager.GetPlayer(type);
+
+			// 追従対象の更新
+			_fllowTarget = type;
+
+			// アウトラインの更新
+			_meshRenderer.materials[1].color = Define.playerColor[(int)type];
+		}
+	}
+
+	public void SetFollowType(Define.PlayerType type)
+	{
+		if (_mobManager.GetFunCount(_fllowTarget) < _mobManager.GetFunCount(type)
+				|| _fllowTarget == Define.PlayerType.None)
+		{
+			if (FunType != Define.PlayerType.None)
+				return;
+			_fllowTarget = type;
+			onChangeFllowPlayer?.Invoke();
+		}
+	}
+
+	/// <summary>
+	/// 定義のみ
+	/// </summary>
+	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) { }
 }

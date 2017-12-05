@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 /// LobbySceneManager クラス
 /// 製作者：実川
 /// </summary>
-public class LobbySceneManager : MonoBehaviour 
+public class LobbySceneManager : Photon.MonoBehaviour 
 {
 	void Update () 
 	{
@@ -13,10 +13,21 @@ public class LobbySceneManager : MonoBehaviour
 		{
 			if (PhotonNetwork.inRoom)
 			{
-				SceneManager.LoadScene("Battle");
+				photonView.RPC("LoadBattleScene", PhotonTargets.AllViaServer);
 				return;
 			}
 			Debug.LogWarning("まだゲーム開始の準備ができていません");
 		}
 	}
+
+	[PunRPC]
+	public void LoadBattleScene()
+	{
+		SceneManager.LoadScene("Battle");
+	}
+
+	/// <summary>
+	/// 定義のみ
+	/// </summary>
+	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) { }
 }

@@ -8,7 +8,7 @@ using UnityEngine;
 /// いずれ、ダンスの当たり判定等もここで行うようにする
 /// 製作者：実川
 /// </summary>
-public class MobManager : MonoBehaviour
+public class MobManager : Photon.MonoBehaviour
 {
 	/// <summary>
 	/// スコア変化時に通知する
@@ -37,6 +37,12 @@ public class MobManager : MonoBehaviour
 
 	private int[] _funCount = new int[Define.PLAYER_NUM_MAX + 1] {0, 0, 0, 0, 0};
 
+	private List<int> _fanChangeStackID = new List<int>();
+	private List<Define.PlayerType> _fanChangeStackType = new List<Define.PlayerType>();
+
+	private List<int> _followChangeStackID = new List<int>();
+	private List<Define.PlayerType> _followChangeStackType = new List<Define.PlayerType>();
+
 	private void Start()
 	{
 		_onScoreChange = () => 
@@ -52,19 +58,38 @@ public class MobManager : MonoBehaviour
 
 		// 一括で設定する
 		if (!_isScoreChange)
+		{
+			if (_followChangeStackType.Count > 0)
+			{
+				photonView.RPC("FollowChangeStack", PhotonTargets.AllViaServer, _followChangeStackType.ToArray(), _followChangeStackID.ToArray());
+				_followChangeStackType.Clear();
+				_followChangeStackID.Clear();
+			}
 			return;
+		}
 
-		//float[][] playerScore = _mobs.Select(e => e.FanPointArray).ToArray();
 		_score.SetScore(Define.PlayerType.First, _mobs.Where(e => e.FunType == Define.PlayerType.First).Count());
 		_score.SetScore(Define.PlayerType.Second, _mobs.Where(e => e.FunType == Define.PlayerType.Second).Count());
 		_score.SetScore(Define.PlayerType.Third, _mobs.Where(e => e.FunType == Define.PlayerType.Third).Count());
 		_score.SetScore(Define.PlayerType.Fourth, _mobs.Where(e => e.FunType == Define.PlayerType.Fourth).Count());
 		_isScoreChange = false;
+
+		if (_fanChangeStackType.Count > 0)
+		{
+			photonView.RPC("SendFanChanges", PhotonTargets.AllViaServer, _fanChangeStackType.ToArray(), _fanChangeStackID.ToArray());
+			_fanChangeStackType.Clear();
+			_fanChangeStackID.Clear();
+		}
 	}
 
 	public int GetFunCount(Define.PlayerType playerType)
 	{	
 		return _funCount[(int)playerType];
+	}
+
+	public void SetMob(Mob mob)
+	{
+		_mobs.Add(mob);
 	}
 
 	/// <summary>
@@ -75,4 +100,58 @@ public class MobManager : MonoBehaviour
 		return _mobs.Where(e => Vector3.Distance(e.transform.position, worldPos) < range)?.ToArray();
 	}
 
+	/// <summary>
+	/// ファン変更処理をスタックする
+	/// </summary>
+	public void FanChangeStack(Define.PlayerType fanTarget, int photonViewID)
+	{
+		_fanChangeStackType.Add(fanTarget);
+		_fanChangeStackID.Add(photonViewID);
+	}
+
+	/// <summary>
+	/// 追従変更処理をスタックする
+	/// </summary>
+	public void FollowChangeStack(Define.PlayerType followTarget, int photonViewID)
+	{
+		_followChangeStackType.Add(followTarget);
+		_followChangeStackID.Add(photonViewID);
+	}
+
+	/// <summary>
+	/// ファン変更履歴を一括送信
+	/// </summary>
+	[PunRPC]
+	private void SendFanChanges(Define.PlayerType[] fanTargets, int[] photonViewIDs)
+	{
+		if (fanTargets.Count() != photonViewIDs.Count())
+			return;
+
+		int max = fanTargets.Count();
+		for (int i = 0; i < max; i++)
+		{
+			_mobs.First(e => e.photonView.viewID == photonViewIDs[i]).SetFunType(fanTargets[i]);
+		}
+	}
+
+	/// <summary>
+	/// 追従変更履歴を一括送信
+	/// </summary>
+	[PunRPC]
+	private void SendFollowChanges(Define.PlayerType[] followTargets, int[] photonViewIDs)
+	{
+		if (followTargets.Count() != photonViewIDs.Count())
+			return;
+
+		int max = followTargets.Count();
+		for (int i = 0; i < max; i++)
+		{
+			_mobs.First(e => e.photonView.viewID == photonViewIDs[i]).SetFunType(followTargets[i]);
+		}
+	}
+
+	/// <summary>
+	/// 定義のみ
+	/// </summary>
+	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) { }
 }

@@ -27,6 +27,7 @@ GameObject:
   - component: {fileID: 114050216218602054}
   - component: {fileID: 114124700771963632}
   - component: {fileID: 114818292167235918}
+  - component: {fileID: 114367314524118280}
   m_Layer: 0
   m_Name: NormalMob
   m_TagString: Mob
@@ -171,9 +172,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7527f532dedceaf4395552c0dd43a7a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _funType: 0
   _fanLevel: 1
   _mobController: {fileID: 114050216218602054}
   _meshRenderer: {fileID: 23139675985354190}
+--- !u!114 &114367314524118280
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1133852973740148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownerId: 0
+  group: 0
+  OwnerShipWasTransfered: 0
+  prefixBackup: -1
+  synchronization: 3
+  onSerializeTransformOption: 3
+  onSerializeRigidBodyOption: 2
+  ownershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 114248920631976908}
+  ObservedComponentsFoldoutOpen: 1
+  viewIdField: 0
+  instantiationId: -1
+  currentMasterID: -1
+  isRuntimeInstantiated: 0
 --- !u!114 &114818292167235918
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -11,18 +11,6 @@ using System.Linq;
 public class MobGenerator : Photon.MonoBehaviour
 {
 	/// <summary>
-	/// モブ管理クラス
-	/// </summary>
-	[SerializeField]
-	private MobManager _mobManager;
-
-	/// <summary>
-	/// プレイヤー管理クラス
-	/// </summary>
-	[SerializeField]
-	private PlayerManager _playerManager;
-
-	/// <summary>
 	/// スコア
 	/// </summary>
 	[SerializeField]
@@ -59,45 +47,36 @@ public class MobGenerator : Photon.MonoBehaviour
 	{
 		public MobManager mobManager;
 		public PlayerManager playerManager;
-		public int instanceID;
-
-		public MobCaches(MobManager MobManager, PlayerManager PlayerManager, int InstanceID)
-		{
-			mobManager = MobManager;
-			playerManager = PlayerManager;
-			instanceID = InstanceID;
-		}
 	}
 
-	private MobCaches _mobCaches;
-
-	public void CreateStart()
+	public MobCaches Caches
 	{
-		//if(photonView.ownerId == )
+		get { return _caches; }
+	}
+
+	private MobCaches _caches;
+
+	private void OnEnable()
+	{
+		_caches.mobManager = GetComponent<MobManager>();
+		_caches.playerManager = GetComponent<PlayerManager>();
+
+		if (!PhotonNetwork.isMasterClient)
+			return;
+
 		StartCoroutine(Enumerator());
-	}
-
-	void Start()
-	{
-		_mobCaches = new MobCaches(_mobManager, _playerManager, 0);
-		CreateStart();
 	}
 
 	private void Create()
 	{
-		GameObject people = Instantiate(_peplePrefab[Random.Range(0, 3)]);
-		people.transform.position = transform.position + new Vector3(Random.Range(-_rangeSize.x, _rangeSize.x), 0, Random.Range(-_rangeSize.y, _rangeSize.y));
-
-		var mob = people.GetComponent<Mob>();
-		_mobCaches.instanceID++;
-		mob.OnAwake(_mobCaches);
-		_mobManager.Mobs.Add(mob);
-		//foreach(Mob element in _list )
-		//{
-		//	element.FanPointArray.Sum();
-		//}
-		//	_list.Select(e => e.FanPointArray).ToArray().SumDoubleArray(4)
-		//.SumArray(3).ToArray();	
+		PhotonNetwork.InstantiateSceneObject(
+			"Prefabs/Mobs/" + _peplePrefab[Random.Range(0, 3)].name, 
+			transform.position + new Vector3(Random.Range(-_rangeSize.x, _rangeSize.x),
+			0, 
+			Random.Range(-_rangeSize.y, _rangeSize.y)), 
+			Quaternion.identity, 
+			0, 
+			null);
 	}
 
 	private IEnumerator Enumerator()
@@ -114,4 +93,9 @@ public class MobGenerator : Photon.MonoBehaviour
 			yield return null;
 		}
 	}
+
+	/// <summary>
+	/// 定義のみ
+	/// </summary>
+	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) { }
 }

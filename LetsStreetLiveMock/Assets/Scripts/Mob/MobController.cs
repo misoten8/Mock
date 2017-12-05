@@ -31,19 +31,19 @@ public class MobController : MonoBehaviour
 		{
 			if (_mob.FllowTarget == Define.PlayerType.None)
 			{
-				Debug.Log(_mob.InstanceID.ToString() + "番のモブは徘徊するドン！");
+				Debug.Log(_mob.photonView.viewID.ToString() + "番のモブは徘徊するドン！");
 				_wanderMove.OnStart();
 			}
 			else
 			{
 				if (_mob.FunType == Define.PlayerType.None)
 				{
-					Debug.Log(_mob.InstanceID.ToString() + "番のモブは" + _mob.FllowTarget.ToString() + "の人の群れに付いていくドン！");
+					Debug.Log(_mob.photonView.viewID.ToString() + "番のモブは" + _mob.FllowTarget.ToString() + "の人の群れに付いていくドン！");
 					_followMove.OnStart(_mob.PlayerManager.GetPlayer(_mob.FllowTarget).transform);
 				}
 				else
 				{
-					Debug.Log(_mob.InstanceID.ToString() + "番のモブは" + _mob.funPlayer.ToString() + "に付いていくドン！");
+					Debug.Log(_mob.photonView.viewID.ToString() + "番のモブは" + _mob.funPlayer.ToString() + "に付いていくドン！");
 					_followMove.OnStart(_mob.funPlayer.transform);
 				}
 				_wanderMove.enabled = false;
@@ -61,8 +61,18 @@ public class MobController : MonoBehaviour
 		// 追従対象プレイヤー変更イベント
 		_mob.onChangeFllowPlayer += () =>
 		{
-			_followMove.OnStart(_mob.PlayerManager.GetPlayer(_mob.FllowTarget).transform);
-			_wanderMove.enabled = false;
+			Player target = _mob.PlayerManager.GetPlayer(_mob.FllowTarget);
+
+			if(target != null)
+			{
+				_followMove.OnStart(_mob.PlayerManager.GetPlayer(_mob.FllowTarget).transform);
+				_wanderMove.enabled = false;
+			}
+			else
+			{
+				_wanderMove.OnStart();
+				_followMove.enabled = false;
+			}
 		};
 
 		_followMove.OnTransCheck = () =>

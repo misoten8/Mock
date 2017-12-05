@@ -5,8 +5,11 @@ using System.Collections.Generic;
 /// <summary>
 /// ロビーでの通信処理
 /// </summary>
-public class LobbyNetwork : Photon.MonoBehaviour
+public class LobbyNetwork : MonoBehaviour
 {
+	/// <summary>
+	/// メッセージの種類とメッセージの紐付けマップ
+	/// </summary>
 	private static readonly Dictionary<State, string> _messageMap = new Dictionary<State, string>
 	{
 		{ State.Start, "" },
@@ -17,6 +20,9 @@ public class LobbyNetwork : Photon.MonoBehaviour
 		{ State.Ready, "メンバーが揃いました、ボタンを押してゲームを開始してください" }
 	};
 
+	/// <summary>
+	/// メッセージの種類
+	/// </summary>
 	private enum State
 	{
 		Start = 0,
@@ -52,12 +58,14 @@ public class LobbyNetwork : Photon.MonoBehaviour
 		if(PhotonNetwork.countOfRooms == 0)
 		{
 			// ルーム作成
-			RoomOptions roomOptions = new RoomOptions();
-			roomOptions.IsVisible = true;
-			roomOptions.IsOpen = true;
-			roomOptions.MaxPlayers = Define.PLAYER_NUM_MAX;
-			roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "CustomProperties", "カスタムプロパティ" } };
-			roomOptions.CustomRoomPropertiesForLobby = new string[] { "CustomProperties" };
+			RoomOptions roomOptions = new RoomOptions
+			{
+				IsVisible = true,
+				IsOpen = true,
+				MaxPlayers = Define.PLAYER_NUM_MAX,
+				CustomRoomProperties = Define.defaultRoomPropaties,
+				CustomRoomPropertiesForLobby = new string[] { "CustomProperties" }
+			};
 			// ルームの作成
 			PhotonNetwork.CreateRoom("Battle Room", roomOptions, new TypedLobby());
 			_currentState = State.CreatingRoom;
@@ -76,7 +84,9 @@ public class LobbyNetwork : Photon.MonoBehaviour
 	private void OnJoinedRoom()
 	{
 		_currentState = State.WaitMember;
-		Debug.Log("ルームに入室しました あなたはplayer" + PhotonNetwork.player.ID.ToString());
+		Debug.Log("ルームに入室しました あなたはplayer" + PhotonNetwork.player.ID.ToString() + "です");
+		// カスタムプロパティの初期化
+		PhotonNetwork.SetPlayerCustomProperties(Define.defaultRoomPropaties);
 	}
 
 	/// <summary>  
@@ -124,7 +134,9 @@ public class LobbyNetwork : Photon.MonoBehaviour
 		var rect = new Rect(new Vector2(Screen.width * 0.5f - boxSize.x * 0.5f, Screen.height * 0.8f - boxSize.y * 0.5f), boxSize);
 		string message = 
 			_messageMap[_currentState] + "\n" +
-			"接続人数：" + PhotonNetwork.countOfPlayers.ToString() + "人";
+			"現在のルーム接続人数：" + PhotonNetwork.room?.PlayerCount.ToString() + "人\n" +
+			"このルームの最大接続人数：" + PhotonNetwork.room?.MaxPlayers.ToString() + "人\n" +
+			"あなたは" + (PhotonNetwork.isMasterClient ? "マスタークライアント" : "一般クライアント") + "です";
 		// UI表示
 		GUI.Box(rect, message);
 	}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using System.Linq;
 
 public class cameramanager : MonoBehaviour {
     //=======================================
@@ -37,19 +38,15 @@ public class cameramanager : MonoBehaviour {
     private CinemachineBrain brain;
     private CAMERAMODE g_mode;
     [SerializeField] private DanceCamera[] dancecamera = new DanceCamera[CAMERA_MAX];
-    //=======================================
-    //関数名 Start
-    //引き数
-    //戻り値
-    //=======================================
-    void Start ()
+	[SerializeField] private CinemachineVirtualCamera[] cinemachineVirtualCamera = new CinemachineVirtualCamera[CAMERA_MAX];
+	//=======================================
+	//関数名 Start
+	//引き数
+	//戻り値
+	//=======================================
+	void Start ()
     {
         g_mode = CAMERAMODE.NORMAL;
-        dancecamera[0] = GameObject.Find("CM DanceCamera1").GetComponent<DanceCamera>();
-        dancecamera[1] = GameObject.Find("CM DanceCamera2").GetComponent<DanceCamera>();
-        dancecamera[2] = GameObject.Find("CM DanceCamera3").GetComponent<DanceCamera>();
-        dancecamera[3] = GameObject.Find("CM DanceCamera4").GetComponent<DanceCamera>();
-        dancecamera[4] = GameObject.Find("CM PlayerCamera").GetComponent<DanceCamera>();
     }
     //=======================================
     //関数名 Update
@@ -145,4 +142,12 @@ public class cameramanager : MonoBehaviour {
         }
 
     }
+	public void SetFollowTarget(Transform transform)
+	{
+		cinemachineVirtualCamera.ToList().ForEach(e => e.Follow = transform);
+	}
+	public void SetLookAtTarget(Transform transform)
+	{
+		cinemachineVirtualCamera.ToList().ForEach(e => e.LookAt = transform);
+	}
 }

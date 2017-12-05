@@ -6,23 +6,21 @@ using WiimoteApi;
 /// Player クラス
 /// 製作者：実川
 /// </summary>
-public class Player : MonoBehaviour
+public class Player : Photon.PunBehaviour
 {
 	public Define.PlayerType Type
 	{
 		get { return _type; }
 	}
 
+	private Define.PlayerType _type;
+
 	public Color PlayerColor
 	{
 		get { return _playerColor; }
 	}
 
-	[SerializeField]
 	private Color _playerColor;
-
-	[SerializeField]
-	private Define.PlayerType _type;
 
 	[SerializeField]
 	private Rigidbody _rb;
@@ -39,44 +37,47 @@ public class Player : MonoBehaviour
 	[SerializeField]
 	private Dance _dance;
 
-	[SerializeField]
 	private PlayerManager _playerManager;
 
+	private MobManager _mobManager;
+
+	private cameramanager _cameramanager;
+
 	// wiiリモコン
-	private Wiimote _wm;
 	private int _wmNum;
 
 	/// <summary>
-	/// プレイヤー生成時に呼ばれる
+	/// PhotonNetwork.Instantiate によって GameObject(とその子供)が生成された際に呼び出されます。
 	/// </summary>
-	public void OnAwake()
+	/// <remarks>
+	/// PhotonMessageInfoパラメータは「誰が」「いつ」作成したかを提供します。
+	/// (「いつ」は PhotonNetworking.time に基づきます。)
+	/// </remarks>
+	public override void OnPhotonInstantiate(PhotonMessageInfo info)
 	{
+		var caches = GameObject.Find("SystemObjects/BattleManager").GetComponent<PlayerGenerator>().Caches;
+		_playerManager = caches.playerManager;
+		_mobManager = caches.mobManager;
+		_cameramanager = caches.cameramanager;
 
-	}
-
-	void Start()
-	{
-		// wiiリモコン初期化処理
-		WiimoteManager.FindWiimotes();
-		_wmNum = (int)_type - 1;
-        if (WiimoteManager.HasWiimote(_wmNum))
+		// プレイヤーを登録
+		_playerManager.SetPlayer(this);
+		
+		if ((int)photonView.instantiationData[0] == PhotonNetwork.player.ID)
 		{
-            _wm = WiimoteManager.Wiimotes[_wmNum];
-            _wm.InitWiiMotionPlus();
-            _wm.Speaker.Init();
-			int i = _wmNum + 1;
-			_wm.SendPlayerLED(i == 1, i == 2, i == 3, i == 4);
-            WiimoteManager.Rumble(_wmNum, false);
+			_type = (Define.PlayerType)(int)photonView.instantiationData[0];
+			_playerColor = Define.playerColor[(int)_type];
+			_cameramanager.SetFollowTarget(transform);
+			_cameramanager.SetLookAtTarget(transform);
+			_dance.OnAwake();
 		}
-
-		_playerManager.onDanceStart += () =>
-		{
-			_dance.Begin();
-		};
 	}
 
 	void Update()
 	{
+		if (!photonView.isMine)
+			return;
+
 		if (!_dance.IsPlaying)
 		{
 			if (Input.GetKey("up") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_RIGHT))
@@ -88,12 +89,38 @@ public class Player : MonoBehaviour
 			if (Input.GetKey("down") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_LEFT))
 				_rb.AddForce(-transform.forward * _power);
 			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_TWO))
-				_dance.Begin();
+				photonView.RPC("DanceBegin", PhotonTargets.AllViaServer);
 		}
 		else
 		{
 			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_ONE))
-				_dance.Cancel();
+				photonView.RPC("DanceCancel", PhotonTargets.AllViaServer);
 		}
+
+		// 移動量の減衰
+		_rb.velocity -= _rb.velocity * 0.1f;
 	}
+
+	/// <summary>
+	/// ダンス開始
+	/// </summary>
+	[PunRPC]
+	public void DanceBegin()
+	{
+		_dance.Begin();
+	}
+
+	/// <summary>
+	/// ダンスキャンセル
+	/// </summary>
+	[PunRPC]
+	public void DanceCancel()
+	{
+		_dance.Cancel();
+	}
+
+	/// <summary>
+	/// 定義のみ
+	/// </summary>
+	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) { }
 }
