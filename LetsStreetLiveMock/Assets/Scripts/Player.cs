@@ -41,8 +41,10 @@ public class Player : MonoBehaviour
 	[SerializeField]
 	private PlayerManager _playerManager;
 
-	// wiiリモコン
-	private Wiimote _wm;
+   
+
+    // wiiリモコン
+    private Wiimote _wm;
 	private int _wmNum;
 
 	void Start()
@@ -68,23 +70,27 @@ public class Player : MonoBehaviour
 
 	void Update()
 	{
-		if (!_dance.IsPlaying)
-		{
-			if (Input.GetKey("up") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_RIGHT))
-				_rb.AddForce(transform.forward * _power);
-			if (Input.GetKey("left") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_UP))
-				transform.Rotate(Vector3.up, -_rotatePower);
-			if (Input.GetKey("right") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_DOWN))
-				transform.Rotate(Vector3.up, _rotatePower);
-			if (Input.GetKey("down") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_LEFT))
-				_rb.AddForce(-transform.forward * _power);
-			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_TWO))
-				_dance.Begin();
-		}
-		else
-		{
-			if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_ONE))
-				_dance.Cancel();
-		}
+        if (!_dance.IsPlaying)
+        {
+            if (Input.GetKey("up") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_RIGHT))
+                _rb.AddForce(transform.forward * _power);
+            if (Input.GetKey("left") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_UP))
+                transform.Rotate(Vector3.up, -_rotatePower);
+            if (Input.GetKey("right") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_DOWN))
+                transform.Rotate(Vector3.up, _rotatePower);
+            if (Input.GetKey("down") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_LEFT))
+                _rb.AddForce(-transform.forward * _power);
+            if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_TWO))
+            {
+                _dance.Begin();
+            }
+        }
+        else
+        {
+            if (Input.GetKeyDown("k") || WiimoteManager.GetButton(_wmNum, ButtonData.WMBUTTON_ONE))
+            {
+                _dance.Cancel();
+            }
+        }
 	}
 }

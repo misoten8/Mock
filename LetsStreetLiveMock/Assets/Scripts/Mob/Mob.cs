@@ -163,7 +163,7 @@ public class Mob : MonoBehaviour
 		// プレイヤーがダンス中であれば、視聴する
 		if (playerDance.IsPlaying)
 		{
-			Debug.Log(_instanceID.ToString() + "番のモブは視聴するドン！");
+			//Debug.Log(_instanceID.ToString() + "番のモブは視聴するドン！");
 			// モブ停止イベント実行
 			onDanceWatchMob?.Invoke();
 

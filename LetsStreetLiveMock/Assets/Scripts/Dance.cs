@@ -67,7 +67,11 @@ public class Dance : MonoBehaviour
 	[SerializeField]
 	private cameramanager _cameramanager;
 
-	private int _dancePoint = 100;
+    [SerializeField]
+    private unitychandemo1 _unitychandemo1;
+
+
+    private int _dancePoint = 100;
 
 	private bool _isSuccess = false;
 
@@ -129,11 +133,15 @@ public class Dance : MonoBehaviour
 
 		// 合計
 		float sum = _requestTime.Sum();
-
+       
 		// 正規化
 		_requestTime = _requestTime.Select(e => PlayerManager.DANCE_TIME * (e / sum)).ToArray();
 
-		_isTransing = false;
+        //ダンスモーション開始
+        _unitychandemo1.SetDancing();
+        Debug.Log("ダンスモーション開始");
+
+        _isTransing = false;
 		_isSuccess = false;
 		_dancePoint = 0;
 		SetCamera(true);
@@ -149,12 +157,15 @@ public class Dance : MonoBehaviour
 	/// </summary>
 	public void End()
 	{
-		onEndDance?.Invoke(false, IsSuccess);
+        onEndDance?.Invoke(false, IsSuccess);
 		onEndDance = null;
 		_danceUI.SetResult(IsSuccess);
 		_isTransing = true;
 		_isPlaing = false;
-		StopCoroutine("StepDo");
+        //ダンスモーション終了
+        _unitychandemo1.SetDancing();
+        Debug.Log("ダンスモーション終了");
+        StopCoroutine("StepDo");
 		Observable
 			.Timer(TimeSpan.FromSeconds(3))
 			.Subscribe(_ =>
@@ -176,8 +187,10 @@ public class Dance : MonoBehaviour
 	{
 		if (_isTransing)
 			return;
-
-		onEndDance?.Invoke(true, IsSuccess);
+        //ダンスモーション中断
+        _unitychandemo1.SetDancing();
+        Debug.Log("ダンスモーション中断");
+        onEndDance?.Invoke(true, IsSuccess);
 		onEndDance = null;
 		_isPlaing = false;
 		_isTransing = false;
