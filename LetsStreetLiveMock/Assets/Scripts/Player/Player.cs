@@ -64,6 +64,7 @@ public class Player : Photon.PunBehaviour
 		_playerColor = Define.playerColor[(int)_type];
 		_dance.OnAwake();
 
+		Debug.Log("生成受信データ player ID : " + ((int)photonView.instantiationData[0]).ToString() + "\n クライアントID : " + PhotonNetwork.player.ID.ToString());
 		// プレイヤー自身だけに実行される処理
 		if ((int)photonView.instantiationData[0] == PhotonNetwork.player.ID)
 		{

@@ -28,4 +28,16 @@ public class Result : MonoBehaviour
 	{
 		SceneManager.LoadScene("Title");
 	}
+
+	/// <summary>
+	/// アプリケーション終了時実行イベント
+	/// </summary>
+	void OnApplicationQuit()
+	{
+		Debug.Log("ルームから退出しました");
+		// ルーム退室  
+		PhotonNetwork.LeaveRoom();
+		// ネットワーク切断
+		PhotonNetwork.Disconnect();
+	}
 }

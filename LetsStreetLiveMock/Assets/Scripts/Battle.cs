@@ -43,6 +43,8 @@ public class Battle : Photon.MonoBehaviour
 		ResultScore.scoreArray[(int)Define.PlayerType.Third] = _score.GetScore(Define.PlayerType.Third);
 		ResultScore.scoreArray[(int)Define.PlayerType.Fourth] = _score.GetScore(Define.PlayerType.Fourth);
 
+		AudioManager.PauseBGM();
+
 		// ルームから退出する
 		PhotonNetwork.LeaveRoom();
 		SceneManager.LoadScene("Result");
@@ -55,8 +57,6 @@ public class Battle : Photon.MonoBehaviour
 	/// </summary>
 	private IEnumerator DelayInstance()
 	{
-		//yield return new WaitForSeconds(3.0f);
-
 		PhotonNetwork.player.CustomProperties[Define.RoomPropaties.IsBattleSceneLoaded] = true;
 
 		if (!PhotonNetwork.isMasterClient)
@@ -105,7 +105,6 @@ public class Battle : Photon.MonoBehaviour
 	/// </summary>
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) { }
 
-	//TODO:未検証
 	public void OnPhotonPlayerPropertiesChanged(object[] i_playerAndUpdatedProps)
 	{
 		var player = i_playerAndUpdatedProps[0] as PhotonPlayer;
@@ -119,5 +118,17 @@ public class Battle : Photon.MonoBehaviour
 				e.SetCustomProperties(properties);
 				return default(IEnumerable);
 			});
+	}
+
+	/// <summary>
+	/// アプリケーション終了時実行イベント
+	/// </summary>
+	void OnApplicationQuit()
+	{
+		Debug.Log("ルームから退出しました");
+		// ルーム退室  
+		PhotonNetwork.LeaveRoom();
+		// ネットワーク切断
+		PhotonNetwork.Disconnect();
 	}
 }

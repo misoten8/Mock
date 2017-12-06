@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -51,7 +52,7 @@ public class PlayerManager : Photon.MonoBehaviour
 		if (playerType == Define.PlayerType.None)
 			return null;
 		
-		return _players[(int)playerType - 1];
+		return _players.First(e => e.Type == playerType);
 	}
 
 	/// <summary>

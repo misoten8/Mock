@@ -45,6 +45,30 @@ public class LobbyNetwork : MonoBehaviour
 			// マスターサーバーへ接続  
 			PhotonNetwork.ConnectUsingSettings("v0.1");
 		}
+		else
+		{
+			if (PhotonNetwork.countOfRooms == 0)
+			{
+				// ルーム作成
+				RoomOptions roomOptions = new RoomOptions
+				{
+					IsVisible = true,
+					IsOpen = true,
+					MaxPlayers = Define.PLAYER_NUM_MAX,
+					CustomRoomProperties = Define.defaultRoomPropaties,
+					CustomRoomPropertiesForLobby = new string[] { "CustomProperties" }
+				};
+				// ルームの作成
+				PhotonNetwork.CreateRoom("Battle Room", roomOptions, new TypedLobby());
+				_currentState = State.CreatingRoom;
+			}
+			else
+			{
+				// ルーム入室
+				PhotonNetwork.JoinRoom("Battle Room");
+				_currentState = State.JoingRoom;
+			}
+		}
 	}
 
 	/// <summary>  
@@ -53,7 +77,13 @@ public class LobbyNetwork : MonoBehaviour
 	private void OnJoinedLobby()
 	{
 		if (PhotonNetwork.inRoom)
+		{
+			_currentState = State.WaitMember;
+			Debug.Log("既にルームに入室しています");
+			// カスタムプロパティの初期化
+			PhotonNetwork.SetPlayerCustomProperties(Define.defaultRoomPropaties);
 			return;
+		}
 
 		if(PhotonNetwork.countOfRooms == 0)
 		{
@@ -78,6 +108,16 @@ public class LobbyNetwork : MonoBehaviour
 		}
 	}
 
+	void OnPhotonCreateRoomFailed(object[] codeAndMsg)
+	{
+		Debug.LogWarning("既にルームが作成されているので、ルームの作成が出来ませんでした。" +
+			"\n作成されているルームに入室します");
+
+		// ルーム入室
+		PhotonNetwork.JoinRoom("Battle Room");
+		_currentState = State.JoingRoom;
+	}
+
 	/// <summary>  
 	/// ルーム参加時  
 	/// </summary>  
@@ -87,6 +127,11 @@ public class LobbyNetwork : MonoBehaviour
 		Debug.Log("ルームに入室しました あなたはplayer" + PhotonNetwork.player.ID.ToString() + "です");
 		// カスタムプロパティの初期化
 		PhotonNetwork.SetPlayerCustomProperties(Define.defaultRoomPropaties);
+	}
+
+	void OnPhotonJoinRoomFailed(object[] codeAndMsg)
+	{
+		Debug.LogWarning("エラーコード:" + ((int)codeAndMsg[0]).ToString() + "\nデバッグメッセージ:" + ((string)codeAndMsg[1]).ToString());
 	}
 
 	/// <summary>  

@@ -45,6 +45,7 @@ public class MobManager : Photon.MonoBehaviour
 
 	private void Start()
 	{
+		Debug.Log("owner ID:" + photonView.ownerId.ToString());
 		_onScoreChange = () => 
 		{
 			_isScoreChange = true;

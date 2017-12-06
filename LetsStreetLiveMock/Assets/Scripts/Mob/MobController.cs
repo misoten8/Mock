@@ -34,7 +34,7 @@ public class MobController : MonoBehaviour
 			{
 				if (_mob.FunType == Define.PlayerType.None)
 				{
-					_followMove.OnStart(_mob.PlayerManager.GetPlayer(_mob.FllowTarget).transform);
+					_followMove.OnStart(_mob.PlayerManager.GetPlayer(_mob.FllowTarget)?.transform);
 				}
 				else
 				{
@@ -58,7 +58,7 @@ public class MobController : MonoBehaviour
 
 			if(target != null)
 			{
-				_followMove.OnStart(_mob.PlayerManager.GetPlayer(_mob.FllowTarget).transform);
+				_followMove.OnStart(target.transform);
 				_wanderMove.enabled = false;
 			}
 			else

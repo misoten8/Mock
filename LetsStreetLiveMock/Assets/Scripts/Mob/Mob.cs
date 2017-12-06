@@ -148,8 +148,8 @@ public class Mob : Photon.PunBehaviour
 
 	private void OnTriggerStay(Collider other)
 	{
-		if (!photonView.isMine)
-			return;
+		//if (!photonView.isMine)
+		//	return;
 
 		if (other.tag != "DanceRange")
 			return;
